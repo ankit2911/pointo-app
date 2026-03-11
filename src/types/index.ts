@@ -20,10 +20,10 @@ export interface CommunityPost {
   savings?: string;
   rangeImprovement?: string;
   likes: number;
-  comments: number;
   timeAgo: string;
   isPointoOwner?: boolean;
   isUpgradePending?: boolean;
+  hasMedia?: boolean;
 }
 
 export interface InstalledUser {

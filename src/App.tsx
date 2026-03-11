@@ -9,6 +9,7 @@ import CommunityScreen from './screens/CommunityScreen';
 import MyBatteryScreen from './screens/MyBatteryScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import InstallationScreen from './screens/InstallationScreen';
+import InstallationStatus from './screens/InstallationStatus';
 import PaymentHistory from './screens/PaymentHistory';
 import Documents from './screens/Documents';
 import Support from './screens/Support';
@@ -29,6 +30,7 @@ const App: React.FC = () => {
               <Route path="/my-battery" element={<MyBatteryScreen />} />
               <Route path="/profile" element={<ProfileScreen />} />
               <Route path="/installation" element={<InstallationScreen />} />
+              <Route path="/installation-status" element={<InstallationStatus />} />
               <Route path="/payments" element={<PaymentHistory />} />
               <Route path="/documents" element={<Documents />} />
               <Route path="/support" element={<Support />} />

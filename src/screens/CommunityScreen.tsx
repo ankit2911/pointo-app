@@ -38,10 +38,10 @@ const CommunityScreen: React.FC = () => {
             savings={post.savings}
             rangeImprovement={post.rangeImprovement}
             likes={post.likes}
-            comments={post.comments}
             timeAgo={post.timeAgo}
             isPointoOwner={post.isPointoOwner}
             isUpgradePending={post.isUpgradePending}
+            hasMedia={post.hasMedia}
           />
         ))}
       </div>

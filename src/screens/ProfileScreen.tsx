@@ -150,25 +150,26 @@ const GuestProfile: React.FC = () => {
 /* ── Approved Profile ── */
 const ApprovedProfile: React.FC = () => {
   const { approvedUser, setStatus } = useUser();
+  const navigate = useNavigate();
   if (!approvedUser) return null;
 
   const menuSections = [
     {
       title: 'Current Step',
       items: [
-        { icon: '📅', label: 'Installation Status', desc: approvedUser.installationStatus },
+        { icon: '📅', label: 'Installation Status', desc: approvedUser.installationStatus, path: '/installation-status' },
       ],
     },
     {
       title: 'Account',
       items: [
-        { icon: '📄', label: 'Documents', desc: 'Application and financing terms' },
+        { icon: '📄', label: 'Documents', desc: 'Application and financing terms', path: '/documents' },
       ],
     },
     {
       title: 'Support',
       items: [
-        { icon: '🎧', label: 'Contact Support', desc: 'Reach out for help' },
+        { icon: '🎧', label: 'Contact Support', desc: 'Reach out for help', path: '/support' },
       ],
     },
   ];
@@ -214,7 +215,11 @@ const ApprovedProfile: React.FC = () => {
         <div key={si} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
           <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider px-5 pt-4 pb-2">{section.title}</p>
           {section.items.map((item, i) => (
-            <button key={i} className="w-full flex items-center gap-3 px-5 py-3 hover:bg-gray-50 transition-colors text-left border-t border-gray-50">
+            <button 
+              key={i} 
+              onClick={() => navigate(item.path)}
+              className="w-full flex items-center gap-3 px-5 py-3 hover:bg-gray-50 transition-colors text-left border-t border-gray-50"
+            >
               <span className="text-lg">{item.icon}</span>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-gray-800">{item.label}</p>
