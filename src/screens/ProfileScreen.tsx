@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 
 const ChevronRight = () => (
@@ -10,21 +11,22 @@ const ChevronRight = () => (
 /* ── Installed Profile ── */
 const InstalledProfile: React.FC = () => {
   const { user, setStatus } = useUser();
+  const navigate = useNavigate();
   if (!user) return null;
 
   const menuSections = [
     {
       title: 'Account',
       items: [
-        { icon: '💳', label: 'Payment History', desc: 'View EMI and transaction records' },
-        { icon: '📄', label: 'Documents', desc: 'KYC, agreement, and receipts' },
+        { icon: '💳', label: 'Payment History', desc: 'View EMI and transaction records', path: '/payments' },
+        { icon: '📄', label: 'Documents', desc: 'KYC, agreement, and receipts', path: '/documents' },
       ],
     },
     {
       title: 'Support',
       items: [
-        { icon: '🎧', label: 'Help & Support', desc: 'Chat or call our team' },
-        { icon: '📋', label: 'Service Requests', desc: 'Track pending requests' },
+        { icon: '🎧', label: 'Help & Support', desc: 'Chat or call our team', path: '/support' },
+        { icon: '📋', label: 'Service Requests', desc: 'Track pending requests', path: '/service-requests' },
       ],
     },
   ];
@@ -68,7 +70,11 @@ const InstalledProfile: React.FC = () => {
         <div key={si} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
           <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider px-5 pt-4 pb-2">{section.title}</p>
           {section.items.map((item, i) => (
-            <button key={i} className="w-full flex items-center gap-3 px-5 py-3 hover:bg-gray-50 transition-colors text-left border-t border-gray-50">
+            <button 
+              key={i} 
+              onClick={() => navigate(item.path)}
+              className="w-full flex items-center gap-3 px-5 py-3 hover:bg-gray-50 transition-colors text-left border-t border-gray-50"
+            >
               <span className="text-lg">{item.icon}</span>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-gray-800">{item.label}</p>
