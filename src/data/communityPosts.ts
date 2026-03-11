@@ -2,6 +2,17 @@ import { CommunityPost } from '../types';
 
 export const communityPosts: CommunityPost[] = [
   {
+    id: 'cp-0',
+    name: 'Ankit',
+    avatar: 'AK',
+    distance: 'Just now',
+    message: 'Upgraded to Pointo Thunder 60V. Installation scheduled!',
+    likes: 12,
+    comments: 2,
+    timeAgo: '10 mins ago',
+    isUpgradePending: true,
+  },
+  {
     id: 'cp-1',
     name: 'Rahul Sharma',
     avatar: 'RS',

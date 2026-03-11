@@ -8,6 +8,7 @@ import ExploreScreen from './screens/ExploreScreen';
 import CommunityScreen from './screens/CommunityScreen';
 import MyBatteryScreen from './screens/MyBatteryScreen';
 import ProfileScreen from './screens/ProfileScreen';
+import InstallationScreen from './screens/InstallationScreen';
 
 const App: React.FC = () => {
   return (
@@ -23,6 +24,7 @@ const App: React.FC = () => {
               <Route path="/community" element={<CommunityScreen />} />
               <Route path="/my-battery" element={<MyBatteryScreen />} />
               <Route path="/profile" element={<ProfileScreen />} />
+              <Route path="/installation" element={<InstallationScreen />} />
             </Routes>
           </main>
           <BottomNav />

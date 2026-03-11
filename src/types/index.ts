@@ -23,6 +23,7 @@ export interface CommunityPost {
   comments: number;
   timeAgo: string;
   isPointoOwner?: boolean;
+  isUpgradePending?: boolean;
 }
 
 export interface InstalledUser {
@@ -43,4 +44,15 @@ export interface InstalledUser {
   installDate: string;
 }
 
-export type UserStatus = 'guest' | 'installed';
+export interface ApprovedUser {
+  name: string;
+  vehicle: string;
+  batteryModel: string;
+  dealer: string;
+  dealerPhone: string;
+  installationStatus: string;
+  financingApproved: boolean;
+  emiAmount: number;
+}
+
+export type UserStatus = 'guest' | 'installed' | 'approved';

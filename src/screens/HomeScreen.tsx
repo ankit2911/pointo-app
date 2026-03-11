@@ -196,9 +196,85 @@ const GuestHome: React.FC = () => {
   );
 };
 
+/* ── Approved Customer Home ── */
+const ApprovedHome: React.FC = () => {
+  const { approvedUser } = useUser();
+  const navigate = useNavigate();
+  if (!approvedUser) return null;
+
+  return (
+    <div className="p-4 space-y-4 pb-6">
+      {/* Installation Ready Card */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-900 to-indigo-700 p-5 text-white">
+        <div className="absolute -right-4 -bottom-4 text-6xl opacity-20">⚡</div>
+        <div className="relative z-10">
+          <div className="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-semibold mb-3">
+            <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+            Approved
+          </div>
+          <h1 className="text-2xl font-extrabold leading-tight mb-4">
+            Your Lithium Upgrade is Ready ⚡
+          </h1>
+          
+          <div className="space-y-3 mb-5">
+            <div className="flex justify-between items-center border-b border-white/10 pb-2">
+              <span className="text-xs text-indigo-200">Battery</span>
+              <span className="text-sm font-bold">{approvedUser.batteryModel}</span>
+            </div>
+            <div className="flex justify-between items-center border-b border-white/10 pb-2">
+              <span className="text-xs text-indigo-200">Financing Approved</span>
+              <span className="text-sm font-bold text-green-300">₹{approvedUser.emiAmount}/month EMI</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-indigo-200">Dealer</span>
+              <span className="text-sm font-bold text-right">{approvedUser.dealer}</span>
+            </div>
+          </div>
+
+          <div className="space-y-2.5">
+            <button
+              onClick={() => navigate('/installation')}
+              className="w-full bg-white text-indigo-700 font-bold text-sm py-3.5 rounded-xl hover:bg-gray-50 transition-all active:scale-[0.98] shadow-lg shadow-black/10"
+            >
+              Schedule Installation
+            </button>
+            <button className="w-full bg-white/10 text-white font-semibold text-sm py-3.5 rounded-xl hover:bg-white/20 transition-colors active:scale-[0.98]">
+              Call Dealer
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Social Proof */}
+      <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 mt-4">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="flex -space-x-2">
+            {['RS', 'PN', 'MI'].map((a, i) => (
+              <div key={i} className="w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center text-white text-[10px] font-bold border-2 border-white">
+                {a}
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-gray-500">
+            <span className="font-semibold text-gray-800">2,400+</span> riders switched this month
+          </p>
+        </div>
+        <button
+          onClick={() => navigate('/community')}
+          className="w-full text-green-600 font-semibold text-sm py-2.5 rounded-xl border-2 border-green-600 hover:bg-green-50 transition-colors active:scale-[0.98]"
+        >
+          See Community Stories
+        </button>
+      </div>
+    </div>
+  );
+};
+
 const HomeScreen: React.FC = () => {
   const { status } = useUser();
-  return status === 'installed' ? <InstalledHome /> : <GuestHome />;
+  if (status === 'installed') return <InstalledHome />;
+  if (status === 'approved') return <ApprovedHome />;
+  return <GuestHome />;
 };
 
 export default HomeScreen;

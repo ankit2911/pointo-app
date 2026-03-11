@@ -58,7 +58,7 @@ const installedTabs = [
 
 const BottomNav: React.FC = () => {
   const { status } = useUser();
-  const tabs = status === 'installed' ? installedTabs : guestTabs;
+  const tabs = (status === 'installed' || status === 'approved') ? installedTabs : guestTabs;
 
   return (
     <nav className="flex items-center justify-around bg-white border-t border-gray-100 h-16 shrink-0">

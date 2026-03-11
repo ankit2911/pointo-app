@@ -41,6 +41,7 @@ const CommunityScreen: React.FC = () => {
             comments={post.comments}
             timeAgo={post.timeAgo}
             isPointoOwner={post.isPointoOwner}
+            isUpgradePending={post.isUpgradePending}
           />
         ))}
       </div>

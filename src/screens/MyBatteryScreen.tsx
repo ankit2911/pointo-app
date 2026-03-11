@@ -42,7 +42,28 @@ const ScoreBar: React.FC<{ label: string; value: string; level: number }> = ({ l
 );
 
 const MyBatteryScreen: React.FC = () => {
-  const { user } = useUser();
+  const { user, status } = useUser();
+  if (status === 'approved') {
+    return (
+      <div className="p-4 pb-6 flex flex-col items-center justify-center min-h-[calc(100vh-8rem)]">
+        <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+            <line x1="12" y1="11" x2="12" y2="11.01" />
+            <line x1="12" y1="15" x2="12" y2="15.01" />
+          </svg>
+        </div>
+        <h1 className="text-xl font-extrabold text-gray-900 mb-2 text-center">
+          Dashboard is locked
+        </h1>
+        <p className="text-sm text-gray-500 text-center max-w-[260px]">
+          Battery dashboard will activate after installation is complete.
+        </p>
+      </div>
+    );
+  }
+
   if (!user) return null;
 
   const emiProgress = (user.emiPaid / user.emiTotal) * 100;

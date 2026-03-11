@@ -1,10 +1,30 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { batteryProducts } from '../data/batteryProducts';
 import ProductCard from '../components/ProductCard';
+import { useUser } from '../context/UserContext';
 
 const ExploreScreen: React.FC = () => {
+  const { status } = useUser();
+  const navigate = useNavigate();
+
   return (
     <div className="p-4 pb-6">
+      {status === 'approved' && (
+        <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-4 mb-5 flex items-center justify-between">
+          <div>
+            <p className="text-xs font-bold text-indigo-900">You already have a reserved battery</p>
+            <p className="text-[10px] text-indigo-600 mt-0.5">Pending installation</p>
+          </div>
+          <button 
+            onClick={() => navigate('/installation')}
+            className="bg-indigo-600 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg hover:bg-indigo-700 active:scale-95 transition-transform"
+          >
+            View Installation
+          </button>
+        </div>
+      )}
+
       <div className="mb-4">
         <h1 className="text-xl font-extrabold text-gray-900">Battery Catalogue</h1>
         <p className="text-sm text-gray-500 mt-0.5">Find the perfect lithium upgrade for your EV</p>

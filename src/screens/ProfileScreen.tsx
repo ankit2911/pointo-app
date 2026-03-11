@@ -141,9 +141,101 @@ const GuestProfile: React.FC = () => {
   );
 };
 
+/* ── Approved Profile ── */
+const ApprovedProfile: React.FC = () => {
+  const { approvedUser, setStatus } = useUser();
+  if (!approvedUser) return null;
+
+  const menuSections = [
+    {
+      title: 'Current Step',
+      items: [
+        { icon: '📅', label: 'Installation Status', desc: approvedUser.installationStatus },
+      ],
+    },
+    {
+      title: 'Account',
+      items: [
+        { icon: '📄', label: 'Documents', desc: 'Application and financing terms' },
+      ],
+    },
+    {
+      title: 'Support',
+      items: [
+        { icon: '🎧', label: 'Contact Support', desc: 'Reach out for help' },
+      ],
+    },
+  ];
+
+  return (
+    <div className="p-4 pb-6 space-y-4">
+      {/* User Info Card */}
+      <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-full flex items-center justify-center text-white text-lg font-extrabold shrink-0">
+            {approvedUser.name.charAt(0)}
+          </div>
+          <div className="flex-1 min-w-0">
+            <h1 className="text-lg font-extrabold text-gray-900">{approvedUser.name}</h1>
+            <p className="text-xs text-gray-500">{approvedUser.vehicle}</p>
+          </div>
+          <span className="shrink-0 bg-indigo-100 text-indigo-700 text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">Approved</span>
+        </div>
+      </div>
+
+      {/* Application Details */}
+      <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+        <h2 className="text-sm font-bold text-gray-900 mb-3">Application Details</h2>
+        <div className="space-y-2.5">
+          {[
+            { label: 'Lead Status', value: 'Approved', highlight: true },
+            { label: 'Battery Model', value: approvedUser.batteryModel },
+            { label: 'Dealer', value: approvedUser.dealer },
+            { label: 'Financing', value: approvedUser.financingApproved ? 'Approved' : 'Pending', highlight: true },
+          ].map((item, i) => (
+            <div key={i} className="flex justify-between items-center py-1.5">
+              <span className="text-xs text-gray-400">{item.label}</span>
+              <span className={`text-xs font-semibold ${item.highlight ? 'text-green-600' : 'text-gray-800'}`}>
+                {item.value}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Menu Sections */}
+      {menuSections.map((section, si) => (
+        <div key={si} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider px-5 pt-4 pb-2">{section.title}</p>
+          {section.items.map((item, i) => (
+            <button key={i} className="w-full flex items-center gap-3 px-5 py-3 hover:bg-gray-50 transition-colors text-left border-t border-gray-50">
+              <span className="text-lg">{item.icon}</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-gray-800">{item.label}</p>
+                <p className={`text-[10px] ${item.label === 'Installation Status' ? 'text-indigo-600 font-bold' : 'text-gray-400'}`}>{item.desc}</p>
+              </div>
+              <ChevronRight />
+            </button>
+          ))}
+        </div>
+      ))}
+
+      {/* Temporary Logout to test states */}
+      <button
+        onClick={() => setStatus('guest')}
+        className="w-full py-3 text-sm font-semibold text-gray-500 bg-white rounded-2xl border border-gray-100 shadow-sm hover:bg-gray-50 transition-colors"
+      >
+        Sign Out
+      </button>
+    </div>
+  );
+};
+
 const ProfileScreen: React.FC = () => {
   const { status } = useUser();
-  return status === 'installed' ? <InstalledProfile /> : <GuestProfile />;
+  if (status === 'installed') return <InstalledProfile />;
+  if (status === 'approved') return <ApprovedProfile />;
+  return <GuestProfile />;
 };
 
 export default ProfileScreen;
