@@ -1,0 +1,103 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
+const ZapIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+  </svg>
+);
+
+const HomeScreen: React.FC = () => {
+  const navigate = useNavigate();
+
+  return (
+    <div className="p-4 space-y-4 pb-6">
+      {/* Hero Card */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-green-600 via-green-500 to-emerald-400 p-5 text-white">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-8 translate-x-8" />
+        <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-10 -translate-x-6" />
+        <div className="relative z-10">
+          <div className="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-semibold mb-3">
+            <span className="w-2 h-2 bg-yellow-300 rounded-full animate-pulse" />
+            Live in your area
+          </div>
+          <h1 className="text-2xl font-extrabold leading-tight mb-1">
+            Your city is switching to Lithium
+          </h1>
+          <p className="text-sm text-green-100 font-medium">
+            12 vehicles near you upgraded this week
+          </p>
+        </div>
+      </div>
+
+      {/* Benefits Card */}
+      <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+        <h2 className="text-base font-bold text-gray-900 mb-4">Why upgrade to Lithium?</h2>
+        <div className="space-y-3">
+          {[
+            { icon: '⚡', title: 'Increase range by 25%', desc: 'Go further on every charge' },
+            { icon: '💰', title: 'Save ₹1,200/month', desc: 'Lower charging & maintenance costs' },
+            { icon: '🔋', title: 'Faster charging', desc: 'Full charge in under 3 hours' },
+          ].map((b, i) => (
+            <div key={i} className="flex items-start gap-3 p-3 bg-gray-50 rounded-xl">
+              <span className="text-xl mt-0.5">{b.icon}</span>
+              <div>
+                <h3 className="text-sm font-semibold text-gray-900">{b.title}</h3>
+                <p className="text-xs text-gray-500 mt-0.5">{b.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <button
+          className="w-full mt-4 bg-green-600 text-white font-semibold text-sm py-3.5 rounded-xl hover:bg-green-700 transition-all active:scale-[0.98] flex items-center justify-center gap-2 shadow-lg shadow-green-600/20"
+        >
+          <ZapIcon />
+          Check Eligibility
+        </button>
+      </div>
+
+      {/* Financing Card */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-gray-900 to-gray-800 p-5 text-white">
+        <div className="absolute -right-4 -bottom-4 text-6xl opacity-10">💳</div>
+        <div className="relative z-10">
+          <p className="text-xs text-gray-400 font-medium uppercase tracking-wider mb-1">Easy Financing</p>
+          <h2 className="text-xl font-extrabold leading-tight mb-1">
+            Upgrade starting<br />
+            <span className="text-green-400">₹499/month</span> with financing
+          </h2>
+          <p className="text-xs text-gray-400 mt-2 mb-4">Zero down payment · Instant approval · No paperwork</p>
+          <button
+            onClick={() => navigate('/explore')}
+            className="bg-white text-gray-900 font-semibold text-sm py-3 px-5 rounded-xl hover:bg-gray-100 transition-all active:scale-[0.98]"
+          >
+            Explore Batteries →
+          </button>
+        </div>
+      </div>
+
+      {/* Social Proof */}
+      <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="flex -space-x-2">
+            {['RS', 'PN', 'MI'].map((a, i) => (
+              <div key={i} className="w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center text-white text-[10px] font-bold border-2 border-white">
+                {a}
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-gray-500">
+            <span className="font-semibold text-gray-800">2,400+</span> riders switched this month
+          </p>
+        </div>
+        <button
+          onClick={() => navigate('/community')}
+          className="w-full text-green-600 font-semibold text-sm py-2.5 rounded-xl border-2 border-green-600 hover:bg-green-50 transition-colors active:scale-[0.98]"
+        >
+          See Community Stories
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default HomeScreen;
