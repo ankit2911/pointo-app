@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../context/LanguageContext';
 
 const BackIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -20,23 +21,24 @@ const FileIcon = () => (
 
 const Documents: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const sections = [
     {
-      title: 'KYC Documents',
-      docs: [{ name: 'Aadhar Card', date: 'Jan 15, 2026' }],
+      title: t('doc_kyc_documents'),
+      docs: [{ name: t('doc_aadhar_card'), date: 'Jan 15, 2026' }],
     },
     {
-      title: 'Agreement',
-      docs: [{ name: 'Loan Agreement', date: 'Jan 18, 2026' }],
+      title: t('doc_agreement'),
+      docs: [{ name: t('doc_loan_agreement'), date: 'Jan 18, 2026' }],
     },
     {
-      title: 'Invoices',
-      docs: [{ name: 'Purchase Invoice', date: 'Jan 20, 2026' }],
+      title: t('doc_invoices'),
+      docs: [{ name: t('doc_purchase_invoice'), date: 'Jan 20, 2026' }],
     },
     {
-      title: 'Warranty',
-      docs: [{ name: 'Battery Warranty Certificate', date: 'Jan 20, 2026' }],
+      title: t('doc_warranty'),
+      docs: [{ name: t('doc_battery_warranty'), date: 'Jan 20, 2026' }],
     },
   ];
 
@@ -46,7 +48,7 @@ const Documents: React.FC = () => {
         <button onClick={() => navigate(-1)} className="p-1 hover:bg-gray-100 rounded-full transition-colors">
           <BackIcon />
         </button>
-        <h1 className="text-lg font-bold text-gray-900">My Documents</h1>
+        <h1 className="text-lg font-bold text-gray-900">{t('doc_my_documents')}</h1>
       </div>
 
       <div className="p-4 space-y-4 pb-6">
@@ -62,15 +64,15 @@ const Documents: React.FC = () => {
                     </div>
                     <div>
                       <h3 className="text-sm font-bold text-gray-900">{doc.name}</h3>
-                      <p className="text-xs text-gray-400 mt-0.5">Uploaded {doc.date}</p>
+                      <p className="text-xs text-gray-400 mt-0.5">{t('doc_uploaded')} {doc.date}</p>
                     </div>
                   </div>
                   <div className="flex gap-2">
                     <button className="flex-1 bg-gray-50 text-gray-700 font-semibold text-xs py-2 rounded-xl border border-gray-200 hover:bg-gray-100 transition-colors">
-                      View
+                      {t('doc_view')}
                     </button>
                     <button className="flex-1 bg-green-50 text-green-700 font-semibold text-xs py-2 rounded-xl border border-green-200 hover:bg-green-100 transition-colors">
-                      Download
+                      {t('doc_download')}
                     </button>
                   </div>
                 </div>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface CommunityCardProps {
   name: string;
@@ -33,6 +34,7 @@ const CommunityCard: React.FC<CommunityCardProps> = ({
 }) => {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(likes);
+  const { t } = useLanguage();
 
   const handleLike = () => {
     setLiked(!liked);
@@ -51,12 +53,12 @@ const CommunityCard: React.FC<CommunityCardProps> = ({
             {isPointoOwner && (
               <span className="shrink-0 inline-flex items-center gap-0.5 bg-green-100 text-green-700 text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider">
                 <svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-                Pointo Owner
+                {t('community_owner_badge')}
               </span>
             )}
             {isUpgradePending && (
               <span className="shrink-0 inline-flex items-center gap-0.5 bg-yellow-100 text-yellow-700 text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider">
-                ⚡ Upgrade Pending
+                {t('community_pending_badge')}
               </span>
             )}
           </div>

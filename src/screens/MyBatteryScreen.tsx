@@ -1,5 +1,6 @@
 import React from 'react';
 import { useUser } from '../context/UserContext';
+import { useLanguage } from '../context/LanguageContext';
 
 /* ── SVG Progress Ring ── */
 const ProgressRing: React.FC<{ percent: number; size?: number; stroke?: number }> = ({
@@ -43,6 +44,8 @@ const ScoreBar: React.FC<{ label: string; value: string; level: number }> = ({ l
 
 const MyBatteryScreen: React.FC = () => {
   const { user, status } = useUser();
+  const { t } = useLanguage();
+
   if (status === 'approved') {
     return (
       <div className="p-4 pb-6 flex flex-col items-center justify-center min-h-[calc(100vh-8rem)]">
@@ -55,10 +58,10 @@ const MyBatteryScreen: React.FC = () => {
           </svg>
         </div>
         <h1 className="text-xl font-extrabold text-gray-900 mb-2 text-center">
-          Dashboard is locked
+          {t('battery_locked_title')}
         </h1>
         <p className="text-sm text-gray-500 text-center max-w-[260px]">
-          Battery dashboard will activate after installation is complete.
+          {t('battery_locked_desc')}
         </p>
       </div>
     );
@@ -72,7 +75,7 @@ const MyBatteryScreen: React.FC = () => {
     <div className="p-4 space-y-4 pb-6">
       {/* Greeting */}
       <div>
-        <h1 className="text-xl font-extrabold text-gray-900">Hello, {user.name} 👋</h1>
+        <h1 className="text-xl font-extrabold text-gray-900">{t('battery_hello')}, {user.name} 👋</h1>
         <p className="text-sm text-gray-500 flex items-center gap-1.5 mt-0.5">
           <span className="inline-block w-2 h-2 bg-green-500 rounded-full" />
           {user.batteryModel} · {user.vehicle}
@@ -82,24 +85,24 @@ const MyBatteryScreen: React.FC = () => {
       {/* Battery Health Card */}
       <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
         <div className="flex items-center justify-between mb-1">
-          <h2 className="text-sm font-bold text-gray-900">Battery Health</h2>
-          <span className="text-[10px] font-semibold text-green-600 bg-green-50 px-2 py-0.5 rounded-full uppercase">Active</span>
+          <h2 className="text-sm font-bold text-gray-900">{t('battery_health')}</h2>
+          <span className="text-[10px] font-semibold text-green-600 bg-green-50 px-2 py-0.5 rounded-full uppercase">{t('battery_health_active')}</span>
         </div>
         <div className="flex items-center gap-5 mt-3">
           <div className="relative shrink-0">
             <ProgressRing percent={user.batteryHealth} size={110} stroke={8} />
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <span className="text-2xl font-extrabold text-gray-900">{user.batteryHealth}%</span>
-              <span className="text-[10px] text-gray-400 font-medium">Health</span>
+              <span className="text-[10px] text-gray-400 font-medium">{t('battery_health_label')}</span>
             </div>
           </div>
           <div className="flex-1 space-y-3">
             <div className="bg-gray-50 rounded-xl p-3">
-              <p className="text-[10px] text-gray-400 uppercase tracking-wider">Range Estimate</p>
-              <p className="text-lg font-extrabold text-gray-900">{user.rangeEstimate} <span className="text-xs font-medium text-gray-400">km</span></p>
+              <p className="text-[10px] text-gray-400 uppercase tracking-wider">{t('battery_range_estimate')}</p>
+              <p className="text-lg font-extrabold text-gray-900">{user.rangeEstimate} <span className="text-xs font-medium text-gray-400">{t('battery_km')}</span></p>
             </div>
             <div className="bg-gray-50 rounded-xl p-3">
-              <p className="text-[10px] text-gray-400 uppercase tracking-wider">Charge Cycles</p>
+              <p className="text-[10px] text-gray-400 uppercase tracking-wider">{t('battery_charge_cycles')}</p>
               <p className="text-lg font-extrabold text-gray-900">{user.chargeCycles}</p>
             </div>
           </div>
@@ -109,26 +112,26 @@ const MyBatteryScreen: React.FC = () => {
       {/* Battery Score Card */}
       <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm font-bold text-gray-900">Battery Score</h2>
+          <h2 className="text-sm font-bold text-gray-900">{t('battery_score')}</h2>
           <div className="flex items-center gap-1">
             <span className="text-xl font-extrabold text-green-600">{user.batteryScore}</span>
             <span className="text-xs text-gray-400 font-medium">/ 10</span>
           </div>
         </div>
         <div className="space-y-3">
-          <ScoreBar label="Charging Behaviour" value={user.chargingBehaviour} level={user.chargingBehaviour === 'Excellent' ? 95 : user.chargingBehaviour === 'Good' ? 78 : 55} />
-          <ScoreBar label="Usage Efficiency" value={user.usageEfficiency} level={user.usageEfficiency === 'Excellent' ? 92 : user.usageEfficiency === 'Good' ? 75 : 50} />
+          <ScoreBar label={t('battery_charging_behavior')} value={user.chargingBehaviour} level={user.chargingBehaviour === 'Excellent' ? 95 : user.chargingBehaviour === 'Good' ? 78 : 55} />
+          <ScoreBar label={t('battery_usage_efficiency')} value={user.usageEfficiency} level={user.usageEfficiency === 'Excellent' ? 92 : user.usageEfficiency === 'Good' ? 75 : 50} />
         </div>
       </div>
 
       {/* Insights Card */}
       <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-        <h2 className="text-sm font-bold text-gray-900 mb-3">🧠 Battery Insights</h2>
+        <h2 className="text-sm font-bold text-gray-900 mb-3">{t('battery_insights')}</h2>
         <div className="space-y-2">
           {[
-            { icon: '⚠️', text: 'Avoid draining below 15% for longer battery life', color: 'bg-amber-50 text-amber-800 border-amber-100' },
-            { icon: '✅', text: `Optimal daily range: 95–110 km. You're in the zone!`, color: 'bg-green-50 text-green-800 border-green-100' },
-            { icon: '⚡', text: 'Fast charging detected twice this week — try to limit it', color: 'bg-blue-50 text-blue-800 border-blue-100' },
+            { icon: '⚠️', text: t('battery_tip_1'), color: 'bg-amber-50 text-amber-800 border-amber-100' },
+            { icon: '✅', text: t('battery_tip_2'), color: 'bg-green-50 text-green-800 border-green-100' },
+            { icon: '⚡', text: t('battery_tip_3'), color: 'bg-blue-50 text-blue-800 border-blue-100' },
           ].map((tip, i) => (
             <div key={i} className={`flex items-start gap-2.5 p-3 rounded-xl text-xs font-medium border ${tip.color}`}>
               <span className="text-sm shrink-0">{tip.icon}</span>
@@ -141,17 +144,17 @@ const MyBatteryScreen: React.FC = () => {
       {/* Finance Status Card */}
       <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-5 text-white relative overflow-hidden">
         <div className="absolute -right-6 -top-6 w-24 h-24 bg-green-500/10 rounded-full" />
-        <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider mb-1">Finance Status</p>
+        <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider mb-1">{t('battery_finance_status')}</p>
         <h3 className="text-base font-bold mb-0.5">Pointo Finance</h3>
         <div className="flex items-end gap-2 mb-3">
           <span className="text-2xl font-extrabold text-green-400">₹{user.emiAmount}</span>
-          <span className="text-xs text-gray-400 mb-1">/month</span>
+          <span className="text-xs text-gray-400 mb-1">{t('battery_per_month')}</span>
         </div>
 
         <div className="mb-3">
           <div className="flex justify-between text-xs mb-1">
-            <span className="text-gray-400">EMI Progress</span>
-            <span className="font-semibold text-white">{user.emiPaid} / {user.emiTotal} paid</span>
+            <span className="text-gray-400">{t('battery_emi_progress')}</span>
+            <span className="font-semibold text-white">{user.emiPaid} / {user.emiTotal} {t('battery_paid')}</span>
           </div>
           <div className="h-2.5 bg-gray-700 rounded-full overflow-hidden">
             <div
@@ -163,22 +166,22 @@ const MyBatteryScreen: React.FC = () => {
 
         <div className="flex gap-2 mt-4">
           <button className="flex-1 bg-green-500 text-white font-semibold text-xs py-2.5 rounded-xl hover:bg-green-600 transition-colors active:scale-[0.98]">
-            Pay EMI
+            {t('battery_pay_emi')}
           </button>
           <button className="flex-1 bg-white/10 text-white font-semibold text-xs py-2.5 rounded-xl hover:bg-white/20 transition-colors active:scale-[0.98]">
-            View Statement
+            {t('battery_view_statement')}
           </button>
         </div>
       </div>
 
       {/* Quick Actions */}
       <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-        <h2 className="text-sm font-bold text-gray-900 mb-3">Quick Actions</h2>
+        <h2 className="text-sm font-bold text-gray-900 mb-3">{t('battery_quick_actions')}</h2>
         <div className="grid grid-cols-3 gap-2 mb-3">
           {[
-            { icon: '🔧', label: 'Request\nService' },
-            { icon: '📞', label: 'Contact\nDealer' },
-            { icon: '🛡️', label: 'Warranty\nDetails' },
+            { icon: '🔧', label: t('battery_action_service') },
+            { icon: '📞', label: t('battery_action_contact') },
+            { icon: '🛡️', label: t('battery_action_warranty') },
           ].map((action, i) => (
             <button key={i} className="bg-gray-50 rounded-xl p-3 flex flex-col items-center gap-1.5 hover:bg-gray-100 transition-colors active:scale-[0.97]">
               <span className="text-xl">{action.icon}</span>
@@ -189,7 +192,7 @@ const MyBatteryScreen: React.FC = () => {
         <div className="flex items-center gap-2 p-3 bg-green-50 rounded-xl">
           <span className="text-sm">📍</span>
           <div>
-            <p className="text-[10px] text-gray-400 uppercase tracking-wider">Your Dealer</p>
+            <p className="text-[10px] text-gray-400 uppercase tracking-wider">{t('battery_your_dealer')}</p>
             <p className="text-xs font-bold text-gray-900">{user.dealer}</p>
           </div>
         </div>

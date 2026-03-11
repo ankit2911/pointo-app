@@ -1,9 +1,11 @@
 import React from 'react';
 import { useUser } from '../context/UserContext';
+import { useLanguage } from '../context/LanguageContext';
 import type { UserStatus } from '../types';
 
 const Header: React.FC = () => {
   const { status, setStatus } = useUser();
+  const { t } = useLanguage();
 
   return (
     <header className="flex items-center justify-between px-4 py-2 bg-white border-b border-gray-100 shrink-0">
@@ -32,7 +34,7 @@ const Header: React.FC = () => {
             </svg>
           </div>
         </div>
-        <span className="text-[8px] text-gray-400 mt-0.5 font-medium tracking-wide">Dev Mode: Switching user experience</span>
+        <span className="text-[8px] text-gray-400 mt-0.5 font-medium tracking-wide">{t('header_dev_mode')}</span>
       </div>
     </header>
   );

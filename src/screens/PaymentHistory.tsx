@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../context/LanguageContext';
 
 const BackIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -10,6 +11,7 @@ const BackIcon = () => (
 
 const PaymentHistory: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const transactions = [
     { month: 'March 2026', amount: 499, status: 'Paid', date: '5 Mar 2026' },
@@ -24,7 +26,7 @@ const PaymentHistory: React.FC = () => {
         <button onClick={() => navigate(-1)} className="p-1 hover:bg-gray-100 rounded-full transition-colors">
           <BackIcon />
         </button>
-        <h1 className="text-lg font-bold text-gray-900">Payment History</h1>
+        <h1 className="text-lg font-bold text-gray-900">{t('payment_history_title')}</h1>
       </div>
 
       <div className="p-4 space-y-4 pb-6">
@@ -33,15 +35,15 @@ const PaymentHistory: React.FC = () => {
           <div className="absolute -right-4 -bottom-4 text-6xl opacity-10">💳</div>
           <div className="relative z-10 space-y-3">
             <div className="flex justify-between items-center border-b border-white/10 pb-2">
-              <span className="text-xs text-indigo-200">Loan Provider</span>
-              <span className="text-sm font-bold">Pointo Finance</span>
+              <span className="text-xs text-indigo-200">{t('payment_provider')}</span>
+              <span className="text-sm font-bold">{t('payment_pointo_finance')}</span>
             </div>
             <div className="flex justify-between items-center border-b border-white/10 pb-2">
-              <span className="text-xs text-indigo-200">EMI Amount</span>
-              <span className="text-sm font-bold text-green-300">₹499/month</span>
+              <span className="text-xs text-indigo-200">{t('payment_emi_amount')}</span>
+              <span className="text-sm font-bold text-green-300">₹499{t('battery_per_month')}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-xs text-indigo-200">Paid Progress</span>
+              <span className="text-xs text-indigo-200">{t('payment_paid_progress')}</span>
               <span className="text-sm font-bold">6 / 24</span>
             </div>
           </div>
@@ -49,7 +51,7 @@ const PaymentHistory: React.FC = () => {
 
         {/* Transaction List */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider px-5 pt-4 mb-2">Transactions</p>
+          <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider px-5 pt-4 mb-2">{t('payment_transactions')}</p>
           <div className="divide-y divide-gray-50">
             {transactions.map((tx, i) => (
               <div key={i} className="p-4 px-5 flex items-center justify-between hover:bg-gray-50 transition-colors">
@@ -78,7 +80,7 @@ const PaymentHistory: React.FC = () => {
             <polyline points="7 10 12 15 17 10" />
             <line x1="12" y1="15" x2="12" y2="3" />
           </svg>
-          Download Statement
+          {t('payment_download_statement')}
         </button>
       </div>
     </div>

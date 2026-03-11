@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useUser } from '../context/UserContext';
+import { useLanguage } from '../context/LanguageContext';
 
 const CalendarIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -18,6 +19,7 @@ const CheckIcon = () => (
 
 const InstallationScreen: React.FC = () => {
   const { approvedUser } = useUser();
+  const { t } = useLanguage();
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
 
   if (!approvedUser) return null;
@@ -27,18 +29,18 @@ const InstallationScreen: React.FC = () => {
   return (
     <div className="p-4 space-y-4 pb-6">
       <div className="mb-2">
-        <h1 className="text-xl font-extrabold text-gray-900">Installation Setup</h1>
-        <p className="text-sm text-gray-500 mt-0.5">Let's get your EV upgraded</p>
+        <h1 className="text-xl font-extrabold text-gray-900">{t('install_setup_title')}</h1>
+        <p className="text-sm text-gray-500 mt-0.5">{t('install_setup_desc')}</p>
       </div>
 
       {/* Installation Steps Tracker */}
       <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
         <div className="space-y-4">
           {[
-            { label: 'Financing Approved', done: true },
-            { label: 'Battery Reserved', done: true },
-            { label: 'Schedule Installation', active: true },
-            { label: 'Installation Complete', pending: true }
+            { label: t('install_step_financing'), done: true },
+            { label: t('install_step_reserved'), done: true },
+            { label: t('install_step_schedule'), active: true },
+            { label: t('install_step_complete'), pending: true }
           ].map((step, i) => (
             <div key={i} className="flex flex-row items-center gap-3">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 border-2 ${
@@ -68,21 +70,21 @@ const InstallationScreen: React.FC = () => {
             </svg>
           </div>
           <div>
-            <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider">Reserved Battery</p>
+            <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider">{t('install_reserved_battery')}</p>
             <h2 className="text-base font-bold text-gray-900">{approvedUser.batteryModel}</h2>
           </div>
         </div>
         <div className="grid grid-cols-3 gap-2">
           <div className="bg-gray-50 rounded-xl p-2.5 text-center">
-            <p className="text-[10px] text-gray-400">Range</p>
-            <p className="text-sm font-bold text-gray-900">110 km</p>
+            <p className="text-[10px] text-gray-400">{t('product_range')}</p>
+            <p className="text-sm font-bold text-gray-900">110 {t('battery_km')}</p>
           </div>
           <div className="bg-gray-50 rounded-xl p-2.5 text-center">
-            <p className="text-[10px] text-gray-400">Charge</p>
+            <p className="text-[10px] text-gray-400">{t('product_charge')}</p>
             <p className="text-sm font-bold text-gray-900">2.5 hrs</p>
           </div>
           <div className="bg-gray-50 rounded-xl p-2.5 text-center">
-            <p className="text-[10px] text-gray-400">Warranty</p>
+            <p className="text-[10px] text-gray-400">{t('product_warranty')}</p>
             <p className="text-sm font-bold text-gray-900">4 Yrs</p>
           </div>
         </div>
@@ -90,7 +92,7 @@ const InstallationScreen: React.FC = () => {
 
       {/* Dealership Details */}
       <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-        <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-2">Assigned Dealer</p>
+        <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-2">{t('install_assigned_dealer')}</p>
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="text-base font-bold text-gray-900">{approvedUser.dealer}</h3>
@@ -102,10 +104,10 @@ const InstallationScreen: React.FC = () => {
         </div>
         <div className="flex gap-2">
           <button className="flex-1 bg-gray-50 text-gray-700 font-semibold text-xs py-2.5 rounded-xl hover:bg-gray-100 transition-colors border border-gray-200">
-            Call Dealer
+            {t('install_call_dealer')}
           </button>
           <button className="flex-1 bg-gray-50 text-gray-700 font-semibold text-xs py-2.5 rounded-xl hover:bg-gray-100 transition-colors border border-gray-200">
-            Get Directions
+            {t('install_directions')}
           </button>
         </div>
       </div>
@@ -114,9 +116,9 @@ const InstallationScreen: React.FC = () => {
       <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
         <h3 className="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
           <CalendarIcon />
-          Schedule Installation
+          {t('install_step_schedule')}
         </h3>
-        <p className="text-xs font-semibold text-gray-600 mb-2">Tomorrow</p>
+        <p className="text-xs font-semibold text-gray-600 mb-2">{t('install_schedule_date_tomorrow')}</p>
         <div className="grid grid-cols-3 gap-2 mb-4">
           {slots.map((slot) => (
             <button
@@ -140,7 +142,7 @@ const InstallationScreen: React.FC = () => {
             : 'bg-gray-100 text-gray-400 cursor-not-allowed'
           }`}
         >
-          {selectedSlot ? 'Confirm Installation Slot' : 'Select a Time Slot'}
+          {selectedSlot ? t('install_confirm_slot') : t('install_select_slot')}
         </button>
       </div>
     </div>

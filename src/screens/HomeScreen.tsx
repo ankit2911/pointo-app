@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
+import { useLanguage } from '../context/LanguageContext';
 
 const ZapIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -11,6 +12,7 @@ const ZapIcon = () => (
 /* ── Installed User Home ── */
 const InstalledHome: React.FC = () => {
   const { user } = useUser();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   if (!user) return null;
 
@@ -20,30 +22,30 @@ const InstalledHome: React.FC = () => {
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-green-600 via-green-500 to-emerald-400 p-5 text-white">
         <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-8 translate-x-8" />
         <div className="relative z-10">
-          <p className="text-xs text-green-100 font-semibold mb-1">Your Battery · {user.batteryModel}</p>
+          <p className="text-xs text-green-100 font-semibold mb-1">{t('home_your_battery')} · {user.batteryModel}</p>
           <div className="flex items-center gap-6 mt-3">
             <div>
               <p className="text-3xl font-extrabold">{user.batteryHealth}%</p>
-              <p className="text-xs text-green-100 mt-0.5">Health</p>
+              <p className="text-xs text-green-100 mt-0.5">{t('home_health')}</p>
             </div>
             <div className="w-px h-10 bg-white/20" />
             <div>
               <p className="text-3xl font-extrabold">{user.rangeEstimate}<span className="text-sm font-semibold ml-0.5">km</span></p>
-              <p className="text-xs text-green-100 mt-0.5">Range Est.</p>
+              <p className="text-xs text-green-100 mt-0.5">{t('home_range_est')}</p>
             </div>
           </div>
           <button
             onClick={() => navigate('/my-battery')}
             className="mt-4 bg-white text-green-700 font-semibold text-sm py-2.5 px-5 rounded-xl hover:bg-green-50 transition-all active:scale-[0.98]"
           >
-            View Battery Dashboard →
+            {t('home_view_dashboard')}
           </button>
         </div>
       </div>
 
       {/* Community Activity */}
       <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-        <h2 className="text-base font-bold text-gray-900 mb-3">🏘️ Community Activity</h2>
+        <h2 className="text-base font-bold text-gray-900 mb-3">{t('home_community_activity')}</h2>
         <div className="space-y-3">
           {[
             { name: 'Priya N.', msg: 'Just completed 100 charge cycles — still going strong!', time: '2h ago' },
@@ -64,18 +66,18 @@ const InstalledHome: React.FC = () => {
           onClick={() => navigate('/community')}
           className="w-full mt-3 text-green-600 font-semibold text-xs py-2 rounded-xl border border-green-200 hover:bg-green-50 transition-colors"
         >
-          See All Community Stories
+          {t('home_see_all_stories')}
         </button>
       </div>
 
       {/* Charging Best Practices */}
       <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-        <h2 className="text-base font-bold text-gray-900 mb-3">⚡ Charging Best Practices</h2>
+        <h2 className="text-base font-bold text-gray-900 mb-3">{t('home_charging_tips')}</h2>
         <div className="space-y-2">
           {[
-            'Charge between 20%–80% for max battery lifespan',
-            'Avoid charging right after a long ride — let it cool',
-            'Use the Pointo-certified charger for optimal performance',
+            t('home_tip_1'),
+            t('home_tip_2'),
+            t('home_tip_3'),
           ].map((tip, i) => (
             <div key={i} className="flex items-start gap-2 p-2.5 bg-amber-50 rounded-lg">
               <span className="text-xs mt-0.5">💡</span>
@@ -89,14 +91,14 @@ const InstalledHome: React.FC = () => {
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-gray-900 to-gray-800 p-5 text-white">
         <div className="absolute -right-4 -bottom-4 text-5xl opacity-10">🔋</div>
         <div className="relative z-10">
-          <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider mb-1">Did you know?</p>
-          <h3 className="text-base font-bold mb-1">Your battery can power more</h3>
-          <p className="text-xs text-gray-400 mb-3">Pointo Thunder users who follow our tips see 15% more range on average.</p>
+          <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider mb-1">{t('home_did_you_know')}</p>
+          <h3 className="text-base font-bold mb-1">{t('home_battery_power')}</h3>
+          <p className="text-xs text-gray-400 mb-3">{t('home_battery_power_desc')}</p>
           <button
             onClick={() => navigate('/explore')}
             className="bg-white/10 text-white font-semibold text-xs py-2.5 px-4 rounded-xl hover:bg-white/20 transition-colors active:scale-[0.98]"
           >
-            Explore Accessories →
+            {t('home_explore_accessories')}
           </button>
         </div>
       </div>
@@ -106,6 +108,7 @@ const InstalledHome: React.FC = () => {
 
 /* ── Guest Home (existing) ── */
 const GuestHome: React.FC = () => {
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   return (
@@ -117,25 +120,25 @@ const GuestHome: React.FC = () => {
         <div className="relative z-10">
           <div className="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-semibold mb-3">
             <span className="w-2 h-2 bg-yellow-300 rounded-full animate-pulse" />
-            Live in your area
+            {t('home_live_area')}
           </div>
           <h1 className="text-2xl font-extrabold leading-tight mb-1">
-            Your city is switching to Lithium
+            {t('home_city_switching')}
           </h1>
           <p className="text-sm text-green-100 font-medium">
-            12 vehicles near you upgraded this week
+            {t('home_riders_upgraded')}
           </p>
         </div>
       </div>
 
       {/* Benefits Card */}
       <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-        <h2 className="text-base font-bold text-gray-900 mb-4">Why upgrade to Lithium?</h2>
+        <h2 className="text-base font-bold text-gray-900 mb-4">{t('home_why_upgrade')}</h2>
         <div className="space-y-3">
           {[
-            { icon: '⚡', title: 'Increase range by 25%', desc: 'Go further on every charge' },
-            { icon: '💰', title: 'Save ₹1,200/month', desc: 'Lower charging & maintenance costs' },
-            { icon: '🔋', title: 'Faster charging', desc: 'Full charge in under 3 hours' },
+            { icon: '⚡', title: t('home_benefit_1_title'), desc: t('home_benefit_1_desc') },
+            { icon: '💰', title: t('home_benefit_2_title'), desc: t('home_benefit_2_desc') },
+            { icon: '🔋', title: t('home_benefit_3_title'), desc: t('home_benefit_3_desc') },
           ].map((b, i) => (
             <div key={i} className="flex items-start gap-3 p-3 bg-gray-50 rounded-xl">
               <span className="text-xl mt-0.5">{b.icon}</span>
@@ -148,7 +151,7 @@ const GuestHome: React.FC = () => {
         </div>
         <button className="w-full mt-4 bg-green-600 text-white font-semibold text-sm py-3.5 rounded-xl hover:bg-green-700 transition-all active:scale-[0.98] flex items-center justify-center gap-2 shadow-lg shadow-green-600/20">
           <ZapIcon />
-          Check Eligibility
+          {t('home_check_eligibility')}
         </button>
       </div>
 
@@ -156,17 +159,17 @@ const GuestHome: React.FC = () => {
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-gray-900 to-gray-800 p-5 text-white">
         <div className="absolute -right-4 -bottom-4 text-6xl opacity-10">💳</div>
         <div className="relative z-10">
-          <p className="text-xs text-gray-400 font-medium uppercase tracking-wider mb-1">Easy Financing</p>
+          <p className="text-xs text-gray-400 font-medium uppercase tracking-wider mb-1">{t('home_easy_financing')}</p>
           <h2 className="text-xl font-extrabold leading-tight mb-1">
-            Upgrade starting<br />
-            <span className="text-green-400">₹499/month</span> with financing
+            {t('home_upgrade_starting')}<br />
+            <span className="text-green-400">₹499/month</span> {t('home_with_financing')}
           </h2>
-          <p className="text-xs text-gray-400 mt-2 mb-4">Zero down payment · Instant approval · No paperwork</p>
+          <p className="text-xs text-gray-400 mt-2 mb-4">{t('home_zero_down')}</p>
           <button
             onClick={() => navigate('/explore')}
             className="bg-white text-gray-900 font-semibold text-sm py-3 px-5 rounded-xl hover:bg-gray-100 transition-all active:scale-[0.98]"
           >
-            Explore Batteries →
+            {t('home_explore_batteries')}
           </button>
         </div>
       </div>
@@ -182,14 +185,14 @@ const GuestHome: React.FC = () => {
             ))}
           </div>
           <p className="text-xs text-gray-500">
-            <span className="font-semibold text-gray-800">2,400+</span> riders switched this month
+            <span className="font-semibold text-gray-800">2,400+</span> {t('home_riders_switched')}
           </p>
         </div>
         <button
           onClick={() => navigate('/community')}
           className="w-full text-green-600 font-semibold text-sm py-2.5 rounded-xl border-2 border-green-600 hover:bg-green-50 transition-colors active:scale-[0.98]"
         >
-          See Community Stories
+          {t('home_see_stories')}
         </button>
       </div>
     </div>
@@ -199,6 +202,7 @@ const GuestHome: React.FC = () => {
 /* ── Approved Customer Home ── */
 const ApprovedHome: React.FC = () => {
   const { approvedUser } = useUser();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   if (!approvedUser) return null;
 
@@ -210,23 +214,23 @@ const ApprovedHome: React.FC = () => {
         <div className="relative z-10">
           <div className="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-semibold mb-3">
             <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-            Approved
+            {t('home_approved_badge')}
           </div>
           <h1 className="text-2xl font-extrabold leading-tight mb-4">
-            Your Lithium Upgrade is Ready ⚡
+            {t('home_lithium_ready')}
           </h1>
           
           <div className="space-y-3 mb-5">
             <div className="flex justify-between items-center border-b border-white/10 pb-2">
-              <span className="text-xs text-indigo-200">Battery</span>
+              <span className="text-xs text-indigo-200">{t('home_battery')}</span>
               <span className="text-sm font-bold">{approvedUser.batteryModel}</span>
             </div>
             <div className="flex justify-between items-center border-b border-white/10 pb-2">
-              <span className="text-xs text-indigo-200">Financing Approved</span>
+              <span className="text-xs text-indigo-200">{t('home_financing_approved')}</span>
               <span className="text-sm font-bold text-green-300">₹{approvedUser.emiAmount}/month EMI</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-xs text-indigo-200">Dealer</span>
+              <span className="text-xs text-indigo-200">{t('home_dealer')}</span>
               <span className="text-sm font-bold text-right">{approvedUser.dealer}</span>
             </div>
           </div>
@@ -236,10 +240,10 @@ const ApprovedHome: React.FC = () => {
               onClick={() => navigate('/installation')}
               className="w-full bg-white text-indigo-700 font-bold text-sm py-3.5 rounded-xl hover:bg-gray-50 transition-all active:scale-[0.98] shadow-lg shadow-black/10"
             >
-              Schedule Installation
+              {t('home_schedule_install')}
             </button>
             <button className="w-full bg-white/10 text-white font-semibold text-sm py-3.5 rounded-xl hover:bg-white/20 transition-colors active:scale-[0.98]">
-              Call Dealer
+              {t('home_call_dealer')}
             </button>
           </div>
         </div>
@@ -256,14 +260,14 @@ const ApprovedHome: React.FC = () => {
             ))}
           </div>
           <p className="text-xs text-gray-500">
-            <span className="font-semibold text-gray-800">2,400+</span> riders switched this month
+            <span className="font-semibold text-gray-800">2,400+</span> {t('home_riders_switched')}
           </p>
         </div>
         <button
           onClick={() => navigate('/community')}
           className="w-full text-green-600 font-semibold text-sm py-2.5 rounded-xl border-2 border-green-600 hover:bg-green-50 transition-colors active:scale-[0.98]"
         >
-          See Community Stories
+          {t('home_see_stories')}
         </button>
       </div>
     </div>

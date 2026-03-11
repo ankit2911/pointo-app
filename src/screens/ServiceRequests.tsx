@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../context/LanguageContext';
 
 const BackIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -10,15 +11,16 @@ const BackIcon = () => (
 
 const ServiceRequests: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [showForm, setShowForm] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
   const activeRequests = [
-    { issue: 'Low range', status: 'Technician Assigned', id: 'SR1024', created: '2 days ago' }
+    { issue: t('sr_low_range'), status: t('sr_tech_assigned'), id: 'SR1024', created: '2 days ago' }
   ];
 
   const pastRequests = [
-    { issue: 'Charging issue', status: 'Resolved', id: 'SR0911', resolved: 'Jan 2026' }
+    { issue: t('sr_charging_issue'), status: t('sr_resolved'), id: 'SR0911', resolved: 'Jan 2026' }
   ];
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -35,29 +37,29 @@ const ServiceRequests: React.FC = () => {
           <button onClick={() => setShowForm(false)} className="p-1 hover:bg-gray-100 rounded-full transition-colors">
             <BackIcon />
           </button>
-          <h1 className="text-lg font-bold text-gray-900">New Request</h1>
+          <h1 className="text-lg font-bold text-gray-900">{t('sr_new_request')}</h1>
         </div>
         <div className="p-4">
           <form onSubmit={handleSubmit} className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1.5">Issue Type</label>
+              <label className="block text-xs font-semibold text-gray-700 mb-1.5">{t('sr_issue_type')}</label>
               <select className="w-full bg-gray-50 border border-gray-200 text-sm py-3 px-3 rounded-xl outline-none focus:border-green-500 transition-colors">
-                <option>Charging Issue</option>
-                <option>Low Range</option>
-                <option>Battery Error</option>
-                <option>Other</option>
+                <option>{t('sr_charging_issue')}</option>
+                <option>{t('sr_low_range')}</option>
+                <option>{t('sr_battery_error')}</option>
+                <option>{t('sr_other')}</option>
               </select>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1.5">Description</label>
+              <label className="block text-xs font-semibold text-gray-700 mb-1.5">{t('sr_description')}</label>
               <textarea 
                 rows={4}
-                placeholder="Can you describe the issue in detail?" 
+                placeholder={t('sr_desc_placeholder')} 
                 className="w-full bg-gray-50 border border-gray-200 text-sm py-3 px-3 rounded-xl outline-none focus:border-green-500 transition-colors resize-none"
               />
             </div>
             <button className="w-full bg-green-600 text-white font-bold text-sm py-3.5 rounded-xl hover:bg-green-700 active:scale-[0.98] transition-all shadow-lg shadow-green-600/20">
-              Submit Request
+              {t('sr_submit_request')}
             </button>
           </form>
         </div>
@@ -71,7 +73,7 @@ const ServiceRequests: React.FC = () => {
         <button onClick={() => navigate(-1)} className="p-1 hover:bg-gray-100 rounded-full transition-colors">
           <BackIcon />
         </button>
-        <h1 className="text-lg font-bold text-gray-900">Service Requests</h1>
+        <h1 className="text-lg font-bold text-gray-900">{t('sr_title')}</h1>
       </div>
 
       <div className="p-4 space-y-5 pb-6">
@@ -79,15 +81,15 @@ const ServiceRequests: React.FC = () => {
           <div className="bg-green-50 border border-green-200 p-4 rounded-xl flex gap-3 items-start animate-fade-in">
             <span className="text-xl">✅</span>
             <div>
-              <p className="text-sm font-bold text-green-800">Request submitted</p>
-              <p className="text-[10px] text-green-700 mt-0.5">Our technician will contact you soon.</p>
+              <p className="text-sm font-bold text-green-800">{t('sr_request_submitted')}</p>
+              <p className="text-[10px] text-green-700 mt-0.5">{t('sr_technician_contact')}</p>
             </div>
           </div>
         )}
 
         {/* Active Requests */}
         <div className="space-y-3">
-          <h2 className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider px-1">Active Requests</h2>
+          <h2 className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider px-1">{t('sr_active_requests')}</h2>
           {activeRequests.map((req) => (
             <div key={req.id} className="bg-white rounded-2xl p-4 shadow-sm border border-orange-100">
               <div className="flex justify-between items-start mb-2">
@@ -95,27 +97,27 @@ const ServiceRequests: React.FC = () => {
                   <span className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse" />
                   {req.status}
                 </div>
-                <span className="text-xs text-gray-400 font-medium">Created {req.created}</span>
+                <span className="text-xs text-gray-400 font-medium">{t('sr_created')} {req.created}</span>
               </div>
               <h3 className="text-base font-bold text-gray-900">{req.issue}</h3>
-              <p className="text-xs text-gray-500 mt-1">Ticket ID: {req.id}</p>
+              <p className="text-xs text-gray-500 mt-1">{t('sr_ticket_id')} {req.id}</p>
             </div>
           ))}
         </div>
 
         {/* Past Requests */}
         <div className="space-y-3">
-          <h2 className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider px-1">Past Requests</h2>
+          <h2 className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider px-1">{t('sr_past_requests')}</h2>
           {pastRequests.map((req) => (
             <div key={req.id} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 opacity-75">
               <div className="flex justify-between items-start mb-2">
                 <div className="inline-flex items-center gap-1 bg-green-50 text-green-700 text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider">
-                  Resolved
+                  {t('sr_resolved')}
                 </div>
-                <span className="text-xs text-gray-400 font-medium">Closed {req.resolved}</span>
+                <span className="text-xs text-gray-400 font-medium">{t('sr_closed')} {req.resolved}</span>
               </div>
               <h3 className="text-sm font-bold text-gray-900">{req.issue}</h3>
-              <p className="text-[10px] text-gray-500 mt-1">Ticket ID: {req.id}</p>
+              <p className="text-[10px] text-gray-500 mt-1">{t('sr_ticket_id')} {req.id}</p>
             </div>
           ))}
         </div>
@@ -124,7 +126,7 @@ const ServiceRequests: React.FC = () => {
           onClick={() => setShowForm(true)}
           className="w-full bg-white text-green-700 font-bold text-sm py-3.5 rounded-xl border border-gray-200 shadow-sm hover:bg-gray-50 active:scale-[0.98] transition-all"
         >
-          Create Service Request
+          {t('sr_create_btn')}
         </button>
       </div>
     </div>

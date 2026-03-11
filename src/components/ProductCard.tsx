@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface ProductCardProps {
   name: string;
@@ -24,6 +25,8 @@ const BatteryIcon = () => (
 const ProductCard: React.FC<ProductCardProps> = ({
   name, voltage, range, chargeTime, warranty, price, emiPrice, tag,
 }) => {
+  const { t } = useLanguage();
+
   return (
     <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 relative overflow-hidden">
       {tag && (
@@ -43,15 +46,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
       <div className="grid grid-cols-3 gap-2 mb-4">
         <div className="bg-gray-50 rounded-xl p-2.5 text-center">
-          <p className="text-xs text-gray-400">Range</p>
+          <p className="text-xs text-gray-400">{t('product_range')}</p>
           <p className="text-sm font-bold text-gray-900">{range}</p>
         </div>
         <div className="bg-gray-50 rounded-xl p-2.5 text-center">
-          <p className="text-xs text-gray-400">Charge</p>
+          <p className="text-xs text-gray-400">{t('product_charge')}</p>
           <p className="text-sm font-bold text-gray-900">{chargeTime}</p>
         </div>
         <div className="bg-gray-50 rounded-xl p-2.5 text-center">
-          <p className="text-xs text-gray-400">Warranty</p>
+          <p className="text-xs text-gray-400">{t('product_warranty')}</p>
           <p className="text-sm font-bold text-gray-900">{warranty}</p>
         </div>
       </div>
@@ -59,16 +62,16 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <div className="flex items-end justify-between mb-3">
         <div>
           <p className="text-lg font-extrabold text-gray-900">₹{price.toLocaleString('en-IN')}</p>
-          <p className="text-xs text-green-600 font-medium">or ₹{emiPrice}/month EMI</p>
+          <p className="text-xs text-green-600 font-medium">{t('product_or')} ₹{emiPrice}{t('product_per_month_emi')}</p>
         </div>
       </div>
 
       <div className="flex gap-2">
         <button className="flex-1 bg-white border-2 border-green-600 text-green-600 font-semibold text-sm py-2.5 rounded-xl hover:bg-green-50 transition-colors active:scale-[0.98]">
-          View Details
+          {t('product_view_details')}
         </button>
         <button className="flex-1 bg-green-600 text-white font-semibold text-sm py-2.5 rounded-xl hover:bg-green-700 transition-colors active:scale-[0.98]">
-          Get Financing
+          {t('product_get_financing')}
         </button>
       </div>
     </div>

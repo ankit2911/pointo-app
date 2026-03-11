@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { batteryProducts } from '../data/batteryProducts';
 import ProductCard from '../components/ProductCard';
 import { useUser } from '../context/UserContext';
+import { useLanguage } from '../context/LanguageContext';
 
 const ExploreScreen: React.FC = () => {
   const { status } = useUser();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   return (
@@ -13,26 +15,26 @@ const ExploreScreen: React.FC = () => {
       {status === 'approved' && (
         <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-4 mb-5 flex items-center justify-between">
           <div>
-            <p className="text-xs font-bold text-indigo-900">You already have a reserved battery</p>
-            <p className="text-[10px] text-indigo-600 mt-0.5">Pending installation</p>
+            <p className="text-xs font-bold text-indigo-900">{t('explore_already_reserved')}</p>
+            <p className="text-[10px] text-indigo-600 mt-0.5">{t('explore_pending_install')}</p>
           </div>
           <button 
             onClick={() => navigate('/installation')}
             className="bg-indigo-600 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg hover:bg-indigo-700 active:scale-95 transition-transform"
           >
-            View Installation
+            {t('explore_view_install')}
           </button>
         </div>
       )}
 
       <div className="mb-4">
-        <h1 className="text-xl font-extrabold text-gray-900">Battery Catalogue</h1>
-        <p className="text-sm text-gray-500 mt-0.5">Find the perfect lithium upgrade for your EV</p>
+        <h1 className="text-xl font-extrabold text-gray-900">{t('explore_catalogue')}</h1>
+        <p className="text-sm text-gray-500 mt-0.5">{t('explore_find_perfect')}</p>
       </div>
 
       {/* Filter chips */}
       <div className="flex gap-2 mb-4 overflow-x-auto pb-1 scrollbar-hide">
-        {['All', '48V', '60V', '72V', 'Budget', 'Premium'].map((filter, i) => (
+        {[t('explore_filter_all'), '48V', '60V', '72V', t('explore_filter_budget'), t('explore_filter_premium')].map((filter, i) => (
           <button
             key={filter}
             className={`shrink-0 px-4 py-2 rounded-full text-xs font-semibold transition-colors ${

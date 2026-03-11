@@ -1,28 +1,31 @@
 import React from 'react';
 import { communityPosts } from '../data/communityPosts';
 import CommunityCard from '../components/CommunityCard';
+import { useLanguage } from '../context/LanguageContext';
 
 const CommunityScreen: React.FC = () => {
+  const { t } = useLanguage();
+
   return (
     <div className="p-4 pb-6">
       <div className="mb-4">
-        <h1 className="text-xl font-extrabold text-gray-900">Community</h1>
-        <p className="text-sm text-gray-500 mt-0.5">See what riders near you are saying</p>
+        <h1 className="text-xl font-extrabold text-gray-900">{t('community_title')}</h1>
+        <p className="text-sm text-gray-500 mt-0.5">{t('community_subtitle')}</p>
       </div>
 
       {/* Stats bar */}
       <div className="flex gap-2 mb-4">
         <div className="flex-1 bg-green-50 rounded-xl p-3 text-center">
           <p className="text-lg font-extrabold text-green-700">2.4K</p>
-          <p className="text-[10px] text-green-600 font-medium">Upgrades</p>
+          <p className="text-[10px] text-green-600 font-medium">{t('community_upgrades')}</p>
         </div>
         <div className="flex-1 bg-emerald-50 rounded-xl p-3 text-center">
           <p className="text-lg font-extrabold text-emerald-700">₹18L</p>
-          <p className="text-[10px] text-emerald-600 font-medium">Total Saved</p>
+          <p className="text-[10px] text-emerald-600 font-medium">{t('community_saved')}</p>
         </div>
         <div className="flex-1 bg-teal-50 rounded-xl p-3 text-center">
           <p className="text-lg font-extrabold text-teal-700">4.8★</p>
-          <p className="text-[10px] text-teal-600 font-medium">Avg Rating</p>
+          <p className="text-[10px] text-teal-600 font-medium">{t('community_rating')}</p>
         </div>
       </div>
 

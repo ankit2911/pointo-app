@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../context/LanguageContext';
 
 const BackIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -10,13 +11,14 @@ const BackIcon = () => (
 
 const Support: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [activeIssue, setActiveIssue] = useState<string | null>(null);
 
   const issues = [
-    { id: '1', title: 'Battery not charging', desc: 'Ensure the charger is securely connected to the port. Check the wall socket switch. If the charger LED is red but battery not charging, please raise a service request.', videoId: 'dQw4w9WgXcQ' },
-    { id: '2', title: 'Low range issue', desc: 'Range depends on riding style, payload, and tire pressure. Try riding in Eco mode for 2 days. If range continues to be low, raise a service request.', videoId: 'K4TOrB7at0Y' },
-    { id: '3', title: 'Warranty question', desc: 'Your Pointo battery comes with a 4-year comprehensive warranty. It covers cell degradation below 70% and manufacturing defects.' },
-    { id: '4', title: 'EMI payment issue', desc: 'If your EMI payment failed, you can retry via the Payment History page. Late payments may incur a nominal fee of ₹50.' },
+    { id: '1', title: t('support_issue_1_title'), desc: t('support_issue_1_desc'), videoId: 'dQw4w9WgXcQ' },
+    { id: '2', title: t('support_issue_2_title'), desc: t('support_issue_2_desc'), videoId: 'K4TOrB7at0Y' },
+    { id: '3', title: t('support_issue_3_title'), desc: t('support_issue_3_desc') },
+    { id: '4', title: t('support_issue_4_title'), desc: t('support_issue_4_desc') },
   ];
 
   return (
@@ -25,27 +27,27 @@ const Support: React.FC = () => {
         <button onClick={() => navigate(-1)} className="p-1 hover:bg-gray-100 rounded-full transition-colors">
           <BackIcon />
         </button>
-        <h1 className="text-lg font-bold text-gray-900">Knowledge Base & Support</h1>
+        <h1 className="text-lg font-bold text-gray-900">{t('support_title')}</h1>
       </div>
 
       <div className="p-4 space-y-4 pb-6">
         {/* Contact Support Card */}
         <div className="bg-gradient-to-br from-green-600 via-green-500 to-emerald-400 rounded-2xl p-5 shadow-sm text-white">
-          <h2 className="text-xl font-extrabold mb-2">Need help with your battery?</h2>
-          <p className="text-sm text-green-50 mb-4">Our support team is available Mon-Sat, 9AM to 7PM.</p>
+          <h2 className="text-xl font-extrabold mb-2">{t('support_need_help')}</h2>
+          <p className="text-sm text-green-50 mb-4">{t('support_timing')}</p>
           <div className="flex gap-2">
             <button className="flex-1 bg-white text-green-700 font-bold text-sm py-3 rounded-xl hover:bg-green-50 transition-colors shadow-sm">
-              Call Support
+              {t('support_call')}
             </button>
             <button className="flex-1 bg-green-700 text-white font-bold text-sm py-3 rounded-xl hover:bg-green-800 transition-colors shadow-sm">
-              Chat Support
+              {t('support_chat')}
             </button>
           </div>
         </div>
 
         {/* Knowledge Repo / Video Guides */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider px-5 pt-4 pb-1">Video Guides & Common Issues</p>
+          <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider px-5 pt-4 pb-1">{t('support_video_guides')}</p>
           <div className="divide-y divide-gray-50">
             {issues.map((issue) => (
               <div key={issue.id}>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
+import { useLanguage } from '../context/LanguageContext';
 
 const HomeIcon = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -41,23 +42,25 @@ const ProfileIcon = () => (
   </svg>
 );
 
-const guestTabs = [
-  { path: '/', label: 'Home', icon: HomeIcon },
-  { path: '/explore', label: 'Explore', icon: ExploreIcon },
-  { path: '/community', label: 'Community', icon: CommunityIcon },
-  { path: '/profile', label: 'Profile', icon: ProfileIcon },
-];
-
-const installedTabs = [
-  { path: '/', label: 'Home', icon: HomeIcon },
-  { path: '/explore', label: 'Explore', icon: ExploreIcon },
-  { path: '/community', label: 'Community', icon: CommunityIcon },
-  { path: '/my-battery', label: 'My Battery', icon: BatteryIcon },
-  { path: '/profile', label: 'Profile', icon: ProfileIcon },
-];
-
 const BottomNav: React.FC = () => {
   const { status } = useUser();
+  const { t } = useLanguage();
+
+  const guestTabs = [
+    { path: '/', label: t('nav_home'), icon: HomeIcon },
+    { path: '/explore', label: t('nav_explore'), icon: ExploreIcon },
+    { path: '/community', label: t('nav_community'), icon: CommunityIcon },
+    { path: '/profile', label: t('nav_profile'), icon: ProfileIcon },
+  ];
+
+  const installedTabs = [
+    { path: '/', label: t('nav_home'), icon: HomeIcon },
+    { path: '/explore', label: t('nav_explore'), icon: ExploreIcon },
+    { path: '/community', label: t('nav_community'), icon: CommunityIcon },
+    { path: '/my-battery', label: t('nav_my_battery'), icon: BatteryIcon },
+    { path: '/profile', label: t('nav_profile'), icon: ProfileIcon },
+  ];
+
   const tabs = (status === 'installed' || status === 'approved') ? installedTabs : guestTabs;
 
   return (
