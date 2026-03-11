@@ -40,6 +40,7 @@ const CommunityScreen: React.FC = () => {
             likes={post.likes}
             comments={post.comments}
             timeAgo={post.timeAgo}
+            isPointoOwner={post.isPointoOwner}
           />
         ))}
       </div>

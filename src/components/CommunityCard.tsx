@@ -10,6 +10,7 @@ interface CommunityCardProps {
   likes: number;
   comments: number;
   timeAgo: string;
+  isPointoOwner?: boolean;
 }
 
 const HeartIcon = ({ filled }: { filled: boolean }) => (
@@ -25,7 +26,7 @@ const CommentIcon = () => (
 );
 
 const CommunityCard: React.FC<CommunityCardProps> = ({
-  name, avatar, distance, message, savings, rangeImprovement, likes, comments, timeAgo,
+  name, avatar, distance, message, savings, rangeImprovement, likes, comments, timeAgo, isPointoOwner,
 }) => {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(likes);
@@ -42,7 +43,15 @@ const CommunityCard: React.FC<CommunityCardProps> = ({
           {avatar}
         </div>
         <div className="flex-1 min-w-0">
-          <h4 className="text-sm font-bold text-gray-900 truncate">{name}</h4>
+          <div className="flex items-center gap-1.5">
+            <h4 className="text-sm font-bold text-gray-900 truncate">{name}</h4>
+            {isPointoOwner && (
+              <span className="shrink-0 inline-flex items-center gap-0.5 bg-green-100 text-green-700 text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider">
+                <svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                Pointo Owner
+              </span>
+            )}
+          </div>
           <p className="text-xs text-gray-400">{distance} · {timeAgo}</p>
         </div>
       </div>

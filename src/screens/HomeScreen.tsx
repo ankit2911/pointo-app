@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
 
 const ZapIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -7,7 +8,104 @@ const ZapIcon = () => (
   </svg>
 );
 
-const HomeScreen: React.FC = () => {
+/* ── Installed User Home ── */
+const InstalledHome: React.FC = () => {
+  const { user } = useUser();
+  const navigate = useNavigate();
+  if (!user) return null;
+
+  return (
+    <div className="p-4 space-y-4 pb-6">
+      {/* Battery Snapshot */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-green-600 via-green-500 to-emerald-400 p-5 text-white">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-8 translate-x-8" />
+        <div className="relative z-10">
+          <p className="text-xs text-green-100 font-semibold mb-1">Your Battery · {user.batteryModel}</p>
+          <div className="flex items-center gap-6 mt-3">
+            <div>
+              <p className="text-3xl font-extrabold">{user.batteryHealth}%</p>
+              <p className="text-xs text-green-100 mt-0.5">Health</p>
+            </div>
+            <div className="w-px h-10 bg-white/20" />
+            <div>
+              <p className="text-3xl font-extrabold">{user.rangeEstimate}<span className="text-sm font-semibold ml-0.5">km</span></p>
+              <p className="text-xs text-green-100 mt-0.5">Range Est.</p>
+            </div>
+          </div>
+          <button
+            onClick={() => navigate('/my-battery')}
+            className="mt-4 bg-white text-green-700 font-semibold text-sm py-2.5 px-5 rounded-xl hover:bg-green-50 transition-all active:scale-[0.98]"
+          >
+            View Battery Dashboard →
+          </button>
+        </div>
+      </div>
+
+      {/* Community Activity */}
+      <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+        <h2 className="text-base font-bold text-gray-900 mb-3">🏘️ Community Activity</h2>
+        <div className="space-y-3">
+          {[
+            { name: 'Priya N.', msg: 'Just completed 100 charge cycles — still going strong!', time: '2h ago' },
+            { name: 'Karthik I.', msg: 'Battery score hit 9.1 after following the tips!', time: '5h ago' },
+          ].map((item, i) => (
+            <div key={i} className="flex items-start gap-3 p-3 bg-gray-50 rounded-xl">
+              <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center text-white text-[10px] font-bold shrink-0">
+                {item.name.split(' ').map(w => w[0]).join('')}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs text-gray-800 font-semibold">{item.name} <span className="text-gray-400 font-normal">· {item.time}</span></p>
+                <p className="text-xs text-gray-500 mt-0.5">{item.msg}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <button
+          onClick={() => navigate('/community')}
+          className="w-full mt-3 text-green-600 font-semibold text-xs py-2 rounded-xl border border-green-200 hover:bg-green-50 transition-colors"
+        >
+          See All Community Stories
+        </button>
+      </div>
+
+      {/* Charging Best Practices */}
+      <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+        <h2 className="text-base font-bold text-gray-900 mb-3">⚡ Charging Best Practices</h2>
+        <div className="space-y-2">
+          {[
+            'Charge between 20%–80% for max battery lifespan',
+            'Avoid charging right after a long ride — let it cool',
+            'Use the Pointo-certified charger for optimal performance',
+          ].map((tip, i) => (
+            <div key={i} className="flex items-start gap-2 p-2.5 bg-amber-50 rounded-lg">
+              <span className="text-xs mt-0.5">💡</span>
+              <p className="text-xs text-amber-800 font-medium leading-relaxed">{tip}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Upgrade Tips */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-gray-900 to-gray-800 p-5 text-white">
+        <div className="absolute -right-4 -bottom-4 text-5xl opacity-10">🔋</div>
+        <div className="relative z-10">
+          <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider mb-1">Did you know?</p>
+          <h3 className="text-base font-bold mb-1">Your battery can power more</h3>
+          <p className="text-xs text-gray-400 mb-3">Pointo Thunder users who follow our tips see 15% more range on average.</p>
+          <button
+            onClick={() => navigate('/explore')}
+            className="bg-white/10 text-white font-semibold text-xs py-2.5 px-4 rounded-xl hover:bg-white/20 transition-colors active:scale-[0.98]"
+          >
+            Explore Accessories →
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ── Guest Home (existing) ── */
+const GuestHome: React.FC = () => {
   const navigate = useNavigate();
 
   return (
@@ -48,9 +146,7 @@ const HomeScreen: React.FC = () => {
             </div>
           ))}
         </div>
-        <button
-          className="w-full mt-4 bg-green-600 text-white font-semibold text-sm py-3.5 rounded-xl hover:bg-green-700 transition-all active:scale-[0.98] flex items-center justify-center gap-2 shadow-lg shadow-green-600/20"
-        >
+        <button className="w-full mt-4 bg-green-600 text-white font-semibold text-sm py-3.5 rounded-xl hover:bg-green-700 transition-all active:scale-[0.98] flex items-center justify-center gap-2 shadow-lg shadow-green-600/20">
           <ZapIcon />
           Check Eligibility
         </button>
@@ -98,6 +194,11 @@ const HomeScreen: React.FC = () => {
       </div>
     </div>
   );
+};
+
+const HomeScreen: React.FC = () => {
+  const { status } = useUser();
+  return status === 'installed' ? <InstalledHome /> : <GuestHome />;
 };
 
 export default HomeScreen;

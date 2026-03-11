@@ -12,6 +12,7 @@ export const communityPosts: CommunityPost[] = [
     likes: 24,
     comments: 6,
     timeAgo: '2 hours ago',
+    isPointoOwner: true,
   },
   {
     id: 'cp-2',
@@ -24,6 +25,7 @@ export const communityPosts: CommunityPost[] = [
     likes: 42,
     comments: 11,
     timeAgo: '5 hours ago',
+    isPointoOwner: true,
   },
   {
     id: 'cp-3',
@@ -35,6 +37,7 @@ export const communityPosts: CommunityPost[] = [
     likes: 67,
     comments: 15,
     timeAgo: '1 day ago',
+    isPointoOwner: true,
   },
   {
     id: 'cp-4',
@@ -59,6 +62,7 @@ export const communityPosts: CommunityPost[] = [
     likes: 53,
     comments: 9,
     timeAgo: '3 days ago',
+    isPointoOwner: true,
   },
   {
     id: 'cp-6',
