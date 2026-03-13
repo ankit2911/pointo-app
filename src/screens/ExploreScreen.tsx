@@ -63,7 +63,13 @@ const ExploreScreen: React.FC = () => {
             emiPrice={product.emiPrice}
             tag={product.tag}
             onViewDetails={() => navigate(`/battery/${product.id}`)}
-            onGetFinancing={() => navigate('/financing/start')}
+            onGetFinancing={() => {
+              if (status === 'guest') {
+                navigate('/login', { state: { from: '/financing/start' } });
+              } else {
+                navigate('/financing/start');
+              }
+            }}
           />
         ))}
       </div>

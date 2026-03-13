@@ -3,11 +3,13 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { batteryProducts } from '../data/batteryProducts';
 import { useLanguage } from '../context/LanguageContext';
 import { ArrowLeft, Zap, Shield, CreditCard, ShoppingBag } from 'lucide-react';
+import { useUser } from '../context/UserContext';
 
 const BatteryDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { t } = useLanguage();
+  const { status } = useUser();
   
   const product = batteryProducts.find(p => p.id === id) || batteryProducts[1]; // Default to Thunder 60V if not found
 
@@ -208,7 +210,13 @@ const BatteryDetails: React.FC = () => {
           <ShoppingBag size={20} />
         </button>
         <button 
-          onClick={() => navigate('/financing/start')}
+          onClick={() => {
+            if (status === 'guest') {
+              navigate('/login', { state: { from: '/financing/start' } });
+            } else {
+              navigate('/financing/start');
+            }
+          }}
           className="flex-[1.5] bg-green-600 text-white font-bold h-12 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-green-600/20 hover:bg-green-700 active:scale-[0.98] transition-all"
         >
           <CreditCard size={18} />

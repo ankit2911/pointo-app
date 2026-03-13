@@ -11,8 +11,12 @@ export const en = {
   header_location: 'Bangalore',
 
   // Login
+  login_enter_otp: 'Enter OTP',
+  login_otp_sent: 'OTP sent to',
+  login_verify_otp: 'Verify & Login',
+  login_resend_otp: 'Resend OTP',
   login_welcome: 'Welcome to Pointo',
-  login_subtitle: 'Power your EV with lithium intelligence',
+  login_subtitle: 'Join the lithium revolution today',
   login_mobile: 'Mobile Number',
   login_send_otp: 'Send OTP',
 

@@ -149,7 +149,16 @@ const GuestHome: React.FC = () => {
             </div>
           ))}
         </div>
-        <button className="w-full mt-4 bg-green-600 text-white font-semibold text-sm py-3.5 rounded-xl hover:bg-green-700 transition-all active:scale-[0.98] flex items-center justify-center gap-2 shadow-lg shadow-green-600/20">
+        <button 
+          onClick={() => {
+            if (status === 'guest') {
+              navigate('/login', { state: { from: '/financing/start' } });
+            } else {
+              navigate('/financing/start');
+            }
+          }}
+          className="w-full mt-4 bg-green-600 text-white font-semibold text-sm py-3.5 rounded-xl hover:bg-green-700 transition-all active:scale-[0.98] flex items-center justify-center gap-2 shadow-lg shadow-green-600/20"
+        >
           <ZapIcon />
           {t('home_check_eligibility')}
         </button>

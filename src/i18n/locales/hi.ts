@@ -13,8 +13,12 @@ export const hi: Record<TranslationKey, string> = {
   header_location: 'बैंगलोर',
 
   // Login
+  login_enter_otp: 'OTP दर्ज करें',
+  login_otp_sent: 'OTP भेजा गया है',
+  login_verify_otp: 'सत्यापित करें और लॉगिन करें',
+  login_resend_otp: 'OTP दोबारा भेजें',
   login_welcome: 'पॉइंटो में आपका स्वागत है',
-  login_subtitle: 'लिथियम इंटेलिजेंस के साथ अपने EV को पावर दें',
+  login_subtitle: 'आज ही लिथियम क्रांति में शामिल हों',
   login_mobile: 'मोबाइल नंबर',
   login_send_otp: 'OTP भेजें',
 
