@@ -2,7 +2,7 @@ export interface BatteryProduct {
   id: string;
   name: string;
   voltage: string;
-  capacity: string;
+  capacity: string; // Added back for detail display if needed
   range: string;
   chargeTime: string;
   cycleLife: string;
@@ -13,6 +13,9 @@ export interface BatteryProduct {
   image?: string;
   tag?: string;
   description?: string;
+  chargerName?: string;
+  chargerSpecs?: string[];
+  chargerWarranty?: string;
 }
 
 export interface CommunityPost {

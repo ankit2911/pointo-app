@@ -334,6 +334,16 @@ export const en = {
   fin_step_identity: 'Identity',
   fin_step_info: 'Additional Info',
   fin_step_result: 'Result',
+  fin_emi_starting: 'EMI starting from',
+  fin_select_plan: 'Select Financing Plan',
+  fin_downpayment: 'Down Payment',
+  fin_loan_amt: 'Loan Amount',
+  fin_apply_financing: 'Apply for Financing',
+  fin_proceed_credit: 'Proceed to Credit Check',
+  fin_summary: 'Financing Summary',
+  charger_ip_rated: 'IP Rated Smart Charger',
+  charger_warranty: 'Charger Warranty',
+  charger_included_with: 'Included with',
 };
 
 export type TranslationKey = keyof typeof en;

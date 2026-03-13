@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { batteryProducts } from '../data/batteryProducts';
 import { useLanguage } from '../context/LanguageContext';
-import { ArrowLeft, Zap, Shield, Info, CreditCard, ShoppingBag } from 'lucide-react';
+import { ArrowLeft, Zap, Shield, CreditCard, ShoppingBag } from 'lucide-react';
 
 const BatteryDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -85,35 +85,53 @@ const BatteryDetails: React.FC = () => {
         <div className="grid grid-cols-1 gap-4">
           {/* Charger */}
           <div className="bg-white border border-gray-100 p-4 rounded-3xl shadow-sm space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600">
-                <Zap size={20} />
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600">
+                  <Zap size={20} />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-900">{product.chargerName || t('details_charger_title')}</h3>
+                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tight">{t('charger_included_with')} {product.name}</p>
+                </div>
               </div>
-              <h3 className="font-bold text-gray-900">{t('details_charger_title')}</h3>
+              {product.chargerName === 'Charger Advance' && (
+                <span className="bg-blue-100 text-blue-700 text-[8px] font-black px-2 py-1 rounded-full uppercase tracking-widest">
+                  {t('charger_ip_rated')}
+                </span>
+              )}
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t('details_input')}</p>
-                <p className="text-xs font-bold text-gray-900">220V AC</p>
-              </div>
-              <div>
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t('details_output')}</p>
-                <p className="text-xs font-bold text-gray-900">67.2V DC</p>
-              </div>
-              <div>
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t('product_charge')}</p>
-                <p className="text-xs font-bold text-gray-900">2.5 hours</p>
-              </div>
-              <div>
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t('details_smart_bms')}</p>
-                <p className="text-xs font-bold text-gray-900">Yes</p>
-              </div>
+            
+            <div className="space-y-2">
+              {product.chargerSpecs ? (
+                product.chargerSpecs.map((spec, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <div className="w-1 h-1 bg-blue-400 rounded-full" />
+                    <p className="text-xs font-medium text-gray-600">{spec}</p>
+                  </div>
+                ))
+              ) : (
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t('details_input')}</p>
+                    <p className="text-xs font-bold text-gray-900">220V AC</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{t('details_output')}</p>
+                    <p className="text-xs font-bold text-gray-900">67.2V DC</p>
+                  </div>
+                </div>
+              )}
             </div>
-            <div className="flex items-start gap-2 pt-2 border-t border-gray-50">
-              <Info size={14} className="text-blue-500 shrink-0 mt-0.5" />
-              <p className="text-[10px] text-gray-500 leading-relaxed font-medium">
-                {t('details_charger_note')}
-              </p>
+
+            <div className="flex items-center justify-between pt-2 border-t border-gray-50">
+              <div className="flex items-center gap-2">
+                <Shield size={14} className="text-blue-500 shrink-0" />
+                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+                  {t('charger_warranty')}
+                </p>
+              </div>
+              <p className="text-xs font-black text-gray-900">{product.chargerWarranty || '1 Year'}</p>
             </div>
           </div>
 

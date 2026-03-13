@@ -65,7 +65,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <div className="flex items-end justify-between mb-3">
         <div>
           <p className="text-lg font-extrabold text-gray-900">₹{price.toLocaleString('en-IN')}</p>
-          <p className="text-xs text-green-600 font-medium">{t('product_or')} ₹{emiPrice}{t('product_per_month_emi')}</p>
+          <p className="text-xs text-green-600 font-medium">{t('fin_emi_starting')} ₹{emiPrice}{t('product_per_month_emi')}</p>
         </div>
       </div>
 

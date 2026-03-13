@@ -2,19 +2,43 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { ArrowLeft, CheckCircle2, AlertCircle, ChevronRight, Gavel, User, Layout, CreditCard, Loader2, Zap } from 'lucide-react';
+import { batteryProducts } from '../data/batteryProducts';
 
-type FlowStep = 'intro' | 'consent' | 'identity' | 'additional' | 'result';
+type FlowStep = 'intro' | 'plan' | 'consent' | 'identity' | 'additional' | 'result';
 
 const FinancingFlow: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
+  
+  // Selection state
+  const [selectedBatteryId, setSelectedBatteryId] = useState(batteryProducts[1].id);
+  const [downPayment, setDownPayment] = useState(12000);
+  const [tenure, setTenure] = useState(24);
+  
   const [step, setStep] = useState<FlowStep>('intro');
   const [consent, setConsent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isEligible, setIsEligible] = useState<boolean | null>(null);
   const [isReserved, setIsReserved] = useState(false);
 
-  const steps: FlowStep[] = ['intro', 'consent', 'identity', 'additional', 'result'];
+  const steps: FlowStep[] = ['intro', 'plan', 'consent', 'identity', 'additional', 'result'];
+  
+  const selectedBattery = batteryProducts.find(b => b.id === selectedBatteryId) || batteryProducts[0];
+  const loanAmount = selectedBattery.price - downPayment;
+  
+  // Simple EMI logic to match user examples:
+  // Spark (55k), DP 12k, Tenure 24 => EMI 2500
+  // Ultra (75k), DP 30k, Tenure 24 => EMI 3200
+  // Effective monthly interest rate (~1.5% for prototype simplicity)
+  const calculateEMI = () => {
+    if (selectedBatteryId === 'bp-spark' && downPayment === 12000 && tenure === 24) return 2500;
+    if (selectedBatteryId === 'bp-ultra' && downPayment === 30000 && tenure === 24) return 3200;
+    
+    // Generic fallback formula: (Loan * 1.4) / Tenure (assuming 40% total interest over tenure for demo)
+    return Math.round((loanAmount * 1.4) / tenure);
+  };
+
+  const emi = calculateEMI();
   const currentStepIndex = steps.indexOf(step);
 
   const handleIdentitySubmit = (e: React.FormEvent) => {
@@ -100,10 +124,119 @@ const FinancingFlow: React.FC = () => {
 
       <div className="mt-auto">
         <button 
-          onClick={() => setStep('consent')}
+          onClick={() => setStep('plan')}
           className="w-full bg-green-600 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-green-600/20 active:scale-[0.98] transition-transform"
         >
           {t('fin_start_app')}
+          <ChevronRight size={20} />
+        </button>
+      </div>
+    </div>
+  );
+
+  const StepPlan = () => (
+    <div className="flex-1 flex flex-col p-6 space-y-6 animate-in fade-in slide-in-from-right-4">
+      <div className="space-y-2">
+        <h2 className="text-xl font-black text-gray-900">{t('fin_select_plan')}</h2>
+        <p className="text-xs text-gray-500">{t('fin_subtitle')}</p>
+      </div>
+
+      <div className="space-y-6">
+        {/* Battery Selection */}
+        <div className="space-y-3">
+          <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('nav_my_battery')}</label>
+          <div className="grid grid-cols-2 gap-3">
+            {batteryProducts.map((b) => (
+              <button
+                key={b.id}
+                onClick={() => setSelectedBatteryId(b.id)}
+                className={`p-4 rounded-2xl border-2 transition-all flex flex-col gap-1 text-left ${
+                  selectedBatteryId === b.id 
+                  ? 'border-green-600 bg-green-50 shadow-md translate-y-[-2px]' 
+                  : 'border-gray-100 bg-white opacity-60'
+                }`}
+              >
+                <span className="text-[10px] font-bold text-gray-500 uppercase">{b.tag}</span>
+                <span className="text-xs font-black text-gray-900">{b.name}</span>
+                <span className="text-xs font-bold text-green-600">₹{b.price.toLocaleString('en-IN')}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* DP & Tenure Selection */}
+        <div className="grid grid-cols-2 gap-6">
+          <div className="space-y-3">
+            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('fin_downpayment')}</label>
+            <div className="space-y-2">
+              {[12000, 30000].map((dp) => (
+                <button
+                  key={dp}
+                  onClick={() => setDownPayment(dp)}
+                  className={`w-full py-3 rounded-xl border-2 font-bold text-xs transition-all ${
+                    downPayment === dp 
+                    ? 'border-gray-900 bg-gray-900 text-white' 
+                    : 'border-gray-100 bg-white text-gray-500'
+                  }`}
+                >
+                  ₹{dp.toLocaleString('en-IN')}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="space-y-3">
+            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('fin_tenure')}</label>
+            <div className="space-y-2">
+              {[12, 24].map((t_val) => (
+                <button
+                  key={t_val}
+                  onClick={() => setTenure(t_val)}
+                  className={`w-full py-3 rounded-xl border-2 font-bold text-xs transition-all ${
+                    tenure === t_val 
+                    ? 'border-gray-900 bg-gray-900 text-white' 
+                    : 'border-gray-100 bg-white text-gray-500'
+                  }`}
+                >
+                  {t_val} Months
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Summary Card */}
+        <div className="bg-white border-2 border-green-600 rounded-3xl p-5 shadow-xl shadow-green-600/5 space-y-4">
+           <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+             <h3 className="text-sm font-black text-gray-900 uppercase tracking-tight">{t('fin_summary')}</h3>
+             <Zap className="text-green-500 fill-green-500" size={16} />
+           </div>
+           <div className="grid grid-cols-2 gap-y-4">
+             <div>
+               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">{t('nav_my_battery')}</p>
+               <p className="text-xs font-black text-gray-900">{selectedBattery.name}</p>
+             </div>
+             <div>
+               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">{t('fin_loan_amt')}</p>
+               <p className="text-xs font-black text-gray-900">₹{loanAmount.toLocaleString('en-IN')}</p>
+             </div>
+             <div>
+               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">{t('fin_emi')}</p>
+               <p className="text-sm font-black text-green-600 tracking-tight">₹{emi.toLocaleString('en-IN')}/mo</p>
+             </div>
+             <div>
+               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">{t('fin_tenure')}</p>
+               <p className="text-xs font-black text-gray-900">{tenure} {t('fin_months')}</p>
+             </div>
+           </div>
+        </div>
+      </div>
+
+      <div className="mt-auto">
+        <button 
+          onClick={() => setStep('consent')}
+          className="w-full bg-green-600 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-green-600/20 active:scale-[0.98] transition-transform"
+        >
+          {t('fin_proceed_credit')}
           <ChevronRight size={20} />
         </button>
       </div>
@@ -311,16 +444,20 @@ const FinancingFlow: React.FC = () => {
               </div>
               <div className="grid grid-cols-2 gap-4 relative z-1">
                 <div>
-                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('fin_loan_amount')}</p>
-                  <p className="text-lg font-black text-gray-900">₹34,999</p>
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('nav_my_battery')}</p>
+                  <p className="text-sm font-black text-gray-900">{selectedBattery.name}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('fin_loan_amt')}</p>
+                  <p className="text-sm font-black text-gray-900">₹{loanAmount.toLocaleString('en-IN')}</p>
                 </div>
                 <div>
                   <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('fin_emi')}</p>
-                  <p className="text-lg font-black text-green-600">₹699/mo</p>
+                  <p className="text-sm font-black text-green-600 tracking-tight">₹{emi.toLocaleString('en-IN')}/mo</p>
                 </div>
                 <div>
                   <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('fin_tenure')}</p>
-                  <p className="text-sm font-black text-gray-900">24 {t('fin_months')}</p>
+                  <p className="text-sm font-black text-gray-900">{tenure} {t('fin_months')}</p>
                 </div>
               </div>
             </div>
@@ -388,6 +525,7 @@ const FinancingFlow: React.FC = () => {
 
       <div className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col">
         {step === 'intro' && <StepIntro />}
+        {step === 'plan' && <StepPlan />}
         {step === 'consent' && <StepConsent />}
         {step === 'identity' && <StepIdentity />}
         {step === 'additional' && <StepAdditional />}
