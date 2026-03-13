@@ -2,6 +2,7 @@ import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
 
 interface ProductCardProps {
+  id: string;
   name: string;
   voltage: string;
   range: string;
@@ -10,6 +11,8 @@ interface ProductCardProps {
   price: number;
   emiPrice: number;
   tag?: string;
+  onViewDetails?: () => void;
+  onGetFinancing?: () => void;
 }
 
 const BatteryIcon = () => (
@@ -23,7 +26,7 @@ const BatteryIcon = () => (
 );
 
 const ProductCard: React.FC<ProductCardProps> = ({
-  name, voltage, range, chargeTime, warranty, price, emiPrice, tag,
+  name, voltage, range, chargeTime, warranty, price, emiPrice, tag, onViewDetails, onGetFinancing,
 }) => {
   const { t } = useLanguage();
 
@@ -67,10 +70,16 @@ const ProductCard: React.FC<ProductCardProps> = ({
       </div>
 
       <div className="flex gap-2">
-        <button className="flex-1 bg-white border-2 border-green-600 text-green-600 font-semibold text-sm py-2.5 rounded-xl hover:bg-green-50 transition-colors active:scale-[0.98]">
+        <button 
+          onClick={onViewDetails}
+          className="flex-1 bg-white border-2 border-green-600 text-green-600 font-semibold text-sm py-2.5 rounded-xl hover:bg-green-50 transition-colors active:scale-[0.98]"
+        >
           {t('product_view_details')}
         </button>
-        <button className="flex-1 bg-green-600 text-white font-semibold text-sm py-2.5 rounded-xl hover:bg-green-700 transition-colors active:scale-[0.98]">
+        <button 
+          onClick={onGetFinancing}
+          className="flex-1 bg-green-600 text-white font-semibold text-sm py-2.5 rounded-xl hover:bg-green-700 transition-colors active:scale-[0.98]"
+        >
           {t('product_get_financing')}
         </button>
       </div>

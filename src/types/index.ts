@@ -2,13 +2,17 @@ export interface BatteryProduct {
   id: string;
   name: string;
   voltage: string;
+  capacity: string;
   range: string;
   chargeTime: string;
+  cycleLife: string;
+  weight: string;
   warranty: string;
   price: number;
   emiPrice: number;
   image?: string;
   tag?: string;
+  description?: string;
 }
 
 export interface CommunityPost {

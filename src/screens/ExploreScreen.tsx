@@ -53,14 +53,17 @@ const ExploreScreen: React.FC = () => {
         {batteryProducts.map((product) => (
           <ProductCard
             key={product.id}
+            id={product.id}
             name={product.name}
-            voltage={product.voltage}
+            voltage={`${product.voltage} ${product.capacity}`}
             range={product.range}
             chargeTime={product.chargeTime}
             warranty={product.warranty}
             price={product.price}
             emiPrice={product.emiPrice}
             tag={product.tag}
+            onViewDetails={() => navigate(`/battery/${product.id}`)}
+            onGetFinancing={() => navigate('/financing/start')}
           />
         ))}
       </div>

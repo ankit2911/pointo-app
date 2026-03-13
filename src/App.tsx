@@ -15,6 +15,8 @@ import Documents from './screens/Documents';
 import Support from './screens/Support';
 import ServiceRequests from './screens/ServiceRequests';
 import LoginScreen from './screens/LoginScreen';
+import BatteryDetails from './screens/BatteryDetails';
+import FinancingFlow from './screens/FinancingFlow';
 import { LanguageProvider } from './context/LanguageContext';
 
 const MainLayout = () => (
@@ -47,6 +49,8 @@ const App: React.FC = () => {
           <div className="w-full max-w-[390px] h-screen max-h-[844px] bg-white flex flex-col shadow-2xl shadow-gray-400/30 overflow-hidden rounded-none sm:rounded-[2rem] sm:border sm:border-gray-200">
             <Routes>
               <Route path="/login" element={<LoginScreen />} />
+              <Route path="/battery/:id" element={<BatteryDetails />} />
+              <Route path="/financing/start" element={<FinancingFlow />} />
               <Route path="/*" element={<MainLayout />} />
             </Routes>
           </div>
