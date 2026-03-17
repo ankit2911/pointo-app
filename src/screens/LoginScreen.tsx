@@ -6,7 +6,7 @@ import { Loader2, ArrowLeft } from 'lucide-react';
 
 const LoginScreen: React.FC = () => {
   const { language, setLanguage, t } = useLanguage();
-  const { setStatus } = useUser();
+  const { setStatus, pendingReferralCode, setPendingReferralCode } = useUser();
   const navigate = useNavigate();
   const location = useLocation();
   const [phone, setPhone] = useState('');
@@ -34,6 +34,11 @@ const LoginScreen: React.FC = () => {
       setLoading(true);
       setTimeout(() => {
         setLoading(false);
+        if (pendingReferralCode) {
+          console.log(`User signed up with referral code: ${pendingReferralCode}`);
+          // In a real app, we'd send this to the backend
+          setPendingReferralCode(null);
+        }
         setStatus('installed');
         navigate(from, { replace: true });
       }, 1500);

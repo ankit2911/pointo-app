@@ -17,6 +17,9 @@ import ServiceRequests from './screens/ServiceRequests';
 import LoginScreen from './screens/LoginScreen';
 import BatteryDetails from './screens/BatteryDetails';
 import FinancingFlow from './screens/FinancingFlow';
+import ReferralScreen from './screens/ReferralScreen';
+import ReferralDashboard from './screens/ReferralDashboard';
+import ReferralJoinScreen from './screens/ReferralJoinScreen';
 import { LanguageProvider } from './context/LanguageContext';
 
 const MainLayout = () => (
@@ -35,6 +38,9 @@ const MainLayout = () => (
         <Route path="/documents" element={<Documents />} />
         <Route path="/support" element={<Support />} />
         <Route path="/service-requests" element={<ServiceRequests />} />
+        <Route path="/referral" element={<ReferralScreen />} />
+        <Route path="/referral/dashboard" element={<ReferralDashboard />} />
+        <Route path="/referral/:code" element={<ReferralJoinScreen />} />
       </Routes>
     </main>
     <BottomNav />

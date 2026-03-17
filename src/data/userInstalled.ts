@@ -16,4 +16,5 @@ export const installedUser: InstalledUser = {
   dealer: 'EV Wheels Bangalore',
   warrantyExpiry: 'Mar 2029',
   installDate: 'Sep 2025',
+  referralEnabled: false,
 };

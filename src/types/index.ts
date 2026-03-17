@@ -33,6 +33,13 @@ export interface CommunityPost {
   hasMedia?: boolean;
 }
 
+export interface Referral {
+  id: string;
+  name: string;
+  status: 'Signed Up' | 'Application Submitted' | 'Approved' | 'Installed';
+  points: number;
+}
+
 export interface InstalledUser {
   name: string;
   vehicle: string;
@@ -49,6 +56,10 @@ export interface InstalledUser {
   dealer: string;
   warrantyExpiry: string;
   installDate: string;
+  referralEnabled?: boolean;
+  referralCode?: string;
+  referralLink?: string;
+  referrals?: Referral[];
 }
 
 export interface ApprovedUser {
@@ -60,6 +71,10 @@ export interface ApprovedUser {
   installationStatus: string;
   financingApproved: boolean;
   emiAmount: number;
+  referralEnabled?: boolean;
+  referralCode?: string;
+  referralLink?: string;
+  referrals?: Referral[];
 }
 
 export type UserStatus = 'guest' | 'installed' | 'approved';

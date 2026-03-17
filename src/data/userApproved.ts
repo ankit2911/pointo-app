@@ -9,4 +9,5 @@ export const approvedUser: ApprovedUser = {
   installationStatus: 'Pending',
   financingApproved: true,
   emiAmount: 499,
+  referralEnabled: false,
 };

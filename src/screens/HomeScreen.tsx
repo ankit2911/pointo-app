@@ -9,6 +9,30 @@ const ZapIcon = () => (
   </svg>
 );
 
+const ReferralCard: React.FC = () => {
+  const navigate = useNavigate();
+  return (
+    <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 overflow-hidden relative">
+      <div className="absolute top-0 right-0 w-24 h-24 bg-green-50 rounded-full -translate-y-8 translate-x-8 -z-0" />
+      <div className="relative z-10">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-xl">🎁</span>
+          <h2 className="text-base font-bold text-gray-900">Earn Rewards by Referring Friends</h2>
+        </div>
+        <p className="text-xs text-gray-500 mb-4 pr-10">
+          Invite others to upgrade to lithium and earn points.
+        </p>
+        <button
+          onClick={() => navigate('/referral')}
+          className="bg-green-600 text-white font-semibold text-xs py-2.5 px-6 rounded-xl hover:bg-green-700 transition-all active:scale-[0.98] shadow-md shadow-green-600/10"
+        >
+          Start Referring
+        </button>
+      </div>
+    </div>
+  );
+};
+
 /* ── Installed User Home ── */
 const InstalledHome: React.FC = () => {
   const { user } = useUser();
@@ -42,6 +66,9 @@ const InstalledHome: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Referral Card */}
+      <ReferralCard />
 
       {/* Community Activity */}
       <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
@@ -257,6 +284,9 @@ const ApprovedHome: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Referral Card */}
+      <ReferralCard />
 
       {/* Social Proof */}
       <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 mt-4">
