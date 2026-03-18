@@ -77,4 +77,13 @@ export interface ApprovedUser {
   referrals?: Referral[];
 }
 
-export type UserStatus = 'guest' | 'installed' | 'approved';
+export interface LoggedInUser {
+  name: string;
+  phone: string;
+  vehicleModel?: string;
+  city?: string;
+  usageType?: 'Personal' | 'Commercial';
+  applicationStarted?: boolean;
+}
+
+export type UserStatus = 'guest' | 'logged_in' | 'installed' | 'approved';

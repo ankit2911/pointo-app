@@ -27,6 +27,21 @@ const ExploreScreen: React.FC = () => {
         </div>
       )}
 
+      {status === 'logged_in' && (
+        <div className="bg-green-600 rounded-2xl p-5 mb-5 text-white shadow-lg shadow-green-600/20 flex items-center justify-between gap-4">
+          <div className="flex-1">
+            <h3 className="text-sm font-bold leading-tight">Ready to upgrade?</h3>
+            <p className="text-[10px] text-green-100 mt-0.5">Check your eligibility in minutes</p>
+          </div>
+          <button 
+            onClick={() => navigate('/application/start')}
+            className="bg-white text-green-700 text-[10px] font-black px-4 py-2.5 rounded-xl hover:bg-green-50 active:scale-95 transition-transform shrink-0"
+          >
+            Start Application
+          </button>
+        </div>
+      )}
+
       <div className="mb-4">
         <h1 className="text-xl font-extrabold text-gray-900">{t('explore_catalogue')}</h1>
         <p className="text-sm text-gray-500 mt-0.5">{t('explore_find_perfect')}</p>

@@ -313,10 +313,71 @@ const ApprovedHome: React.FC = () => {
   );
 };
 
+/* ── Logged In User Home ── */
+const LoggedInHome: React.FC = () => {
+  const { loggedInUser } = useUser();
+  const navigate = useNavigate();
+  if (!loggedInUser) return null;
+
+  return (
+    <div className="p-4 space-y-6 pb-6">
+      {/* Greeting */}
+      <div>
+        <h1 className="text-2xl font-black text-gray-900">Hello {loggedInUser.name} 👋</h1>
+        <p className="text-sm font-medium text-gray-500 mt-1">Explore lithium upgrades for your vehicle</p>
+      </div>
+
+      {/* Primary Card (Soft CTA) */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-green-600 to-emerald-500 p-6 text-white shadow-xl shadow-green-600/20">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-8 translate-x-8" />
+        <div className="relative z-10">
+          <h2 className="text-2xl font-black leading-tight mb-2">
+            Upgrade your EV<br />to Lithium ⚡
+          </h2>
+          <p className="text-green-50 text-sm font-medium mb-6">
+            Better range, faster charging, and lower running cost.
+          </p>
+          <div className="flex flex-col gap-3">
+            <button
+              onClick={() => navigate('/application/start')}
+              className="bg-white text-green-700 font-bold py-3.5 rounded-2xl hover:bg-green-50 transition-all active:scale-[0.98] shadow-lg shadow-black/5"
+            >
+              Check Eligibility
+            </button>
+            <button
+              onClick={() => navigate('/explore')}
+              className="bg-white/20 backdrop-blur-md text-white border border-white/30 font-bold py-3.5 rounded-2xl hover:bg-white/30 transition-all active:scale-[0.98]"
+            >
+              Explore Batteries
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Secondary Card */}
+      <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex items-center justify-between">
+        <div>
+          <h3 className="text-base font-bold text-gray-900">See how others<br />are upgrading</h3>
+        </div>
+        <button
+          onClick={() => navigate('/community')}
+          className="bg-gray-900 text-white font-bold px-5 py-3 rounded-2xl text-xs active:scale-95 transition-all"
+        >
+          View Community
+        </button>
+      </div>
+
+      {/* Referral Card (Optional for logged_in users as well?) */}
+      {/* The prompt didn't explicitly mention referral card for logged_in, but keep it if simple */}
+    </div>
+  );
+};
+
 const HomeScreen: React.FC = () => {
   const { status } = useUser();
   if (status === 'installed') return <InstalledHome />;
   if (status === 'approved') return <ApprovedHome />;
+  if (status === 'logged_in') return <LoggedInHome />;
   return <GuestHome />;
 };
 

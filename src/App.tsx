@@ -20,6 +20,7 @@ import FinancingFlow from './screens/FinancingFlow';
 import ReferralScreen from './screens/ReferralScreen';
 import ReferralDashboard from './screens/ReferralDashboard';
 import ReferralJoinScreen from './screens/ReferralJoinScreen';
+import ApplicationStartFlow from './screens/ApplicationStartFlow';
 import { LanguageProvider } from './context/LanguageContext';
 
 const MainLayout = () => (
@@ -41,6 +42,7 @@ const MainLayout = () => (
         <Route path="/referral" element={<ReferralScreen />} />
         <Route path="/referral/dashboard" element={<ReferralDashboard />} />
         <Route path="/referral/:code" element={<ReferralJoinScreen />} />
+        <Route path="/application/start" element={<ApplicationStartFlow />} />
       </Routes>
     </main>
     <BottomNav />

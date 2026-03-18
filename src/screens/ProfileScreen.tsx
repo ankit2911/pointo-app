@@ -303,6 +303,147 @@ const ApprovedProfile: React.FC<{ onOpenLanguage: () => void }> = ({ onOpenLangu
   );
 };
 
+/* ── Logged In Profile ── */
+const LoggedInProfile: React.FC<{ onOpenLanguage: () => void }> = ({ onOpenLanguage }) => {
+  const { loggedInUser, updateLoggedInUser, setStatus } = useUser();
+  const { language, t } = useLanguage();
+  const navigate = useNavigate();
+  const [isEditingVehicle, setIsEditingVehicle] = useState(false);
+  const [tempVehicle, setTempVehicle] = useState(loggedInUser?.vehicleModel || '');
+
+  if (!loggedInUser) return null;
+
+  const handleSaveVehicle = () => {
+    updateLoggedInUser({ vehicleModel: tempVehicle });
+    setIsEditingVehicle(false);
+  };
+
+  const menuSections: { title: string; items: { icon: string; label: string; desc: string; onClick?: () => void; path?: string }[] }[] = [
+    {
+      title: t('profile_settings'),
+      items: [
+        { icon: '🌐', label: t('profile_language'), desc: language === 'hi' ? t('lang_hi') : t('lang_en'), onClick: onOpenLanguage },
+      ],
+    },
+    {
+      title: t('support'),
+      items: [
+        { icon: '🎧', label: t('contact_support'), desc: t('contact_support_desc'), path: '/support' },
+      ],
+    },
+  ];
+
+  return (
+    <div className="p-4 pb-6 space-y-4">
+      {/* Profile Header */}
+      <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex items-center gap-4">
+        <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-700 rounded-full flex items-center justify-center text-white text-xl font-black shrink-0 shadow-lg">
+          {loggedInUser.name.charAt(0)}
+        </div>
+        <div className="flex-1 min-w-0">
+          <h1 className="text-xl font-black text-gray-900">{loggedInUser.name}</h1>
+          <p className="text-sm font-medium text-gray-500">{loggedInUser.phone}</p>
+        </div>
+      </div>
+
+      {/* Vehicle Info */}
+      <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 italic">
+        <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Your Vehicle</h2>
+        
+        {isEditingVehicle ? (
+          <div className="space-y-3">
+            <input 
+              type="text"
+              value={tempVehicle}
+              onChange={(e) => setTempVehicle(e.target.value)}
+              className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-green-500 font-bold text-sm"
+              placeholder="e.g. Ather 450X"
+            />
+            <div className="flex gap-2">
+              <button 
+                onClick={handleSaveVehicle}
+                className="flex-1 bg-green-600 text-white font-bold py-2 rounded-xl text-xs"
+              >
+                Save
+              </button>
+              <button 
+                onClick={() => setIsEditingVehicle(false)}
+                className="flex-1 bg-gray-100 text-gray-600 font-bold py-2 rounded-xl text-xs"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-base font-bold text-gray-900">{loggedInUser.vehicleModel || 'No vehicle added'}</p>
+              <p className="text-[10px] text-gray-400 font-medium">Model</p>
+            </div>
+            <button 
+              onClick={() => setIsEditingVehicle(true)}
+              className="text-green-600 font-bold text-xs hover:underline"
+            >
+              Edit
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Application Status Card */}
+      <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl p-6 text-white relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full -translate-y-8 translate-x-8" />
+        <div className="relative z-10">
+          <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Application Status</h3>
+          <p className="text-base font-bold mb-5 leading-snug">
+            {loggedInUser.applicationStarted 
+              ? 'Your application is in progress.' 
+              : 'You haven’t started your lithium upgrade yet.'}
+          </p>
+          <button 
+            onClick={() => navigate('/application/start')}
+            className="w-full bg-green-600 text-white font-black py-4 rounded-2xl shadow-lg shadow-green-600/10 active:scale-[0.98] transition-all text-sm"
+          >
+            {loggedInUser.applicationStarted ? 'Continue Application' : 'Start Application'}
+          </button>
+        </div>
+      </div>
+
+      {/* Menu Sections */}
+      {menuSections.map((section, si) => (
+        <div key={si} className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+          <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider px-6 pt-5 pb-2">{section.title}</p>
+          {section.items.map((item, i) => (
+            <button 
+              key={i} 
+              onClick={() => {
+                if (item.onClick) item.onClick();
+                else if (item.path) navigate(item.path);
+              }}
+              className="w-full flex items-center gap-4 px-6 py-4 hover:bg-gray-50 transition-colors text-left border-t border-gray-50"
+            >
+              <span className="text-xl">{item.icon}</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-gray-800">{item.label}</p>
+                <p className="text-[10px] text-gray-400 font-medium">{item.desc}</p>
+              </div>
+              <ChevronRight />
+            </button>
+          ))}
+        </div>
+      ))}
+
+      {/* Logout */}
+      <button
+        onClick={() => setStatus('guest')}
+        className="w-full py-4 text-sm font-bold text-red-500 bg-white rounded-3xl border border-gray-100 shadow-sm hover:bg-red-50 transition-colors"
+      >
+        {t('logout')}
+      </button>
+    </div>
+  );
+};
+
 const ProfileScreen: React.FC = () => {
   const { status } = useUser();
   const [isLangModalOpen, setIsLangModalOpen] = useState(false);
@@ -311,6 +452,7 @@ const ProfileScreen: React.FC = () => {
     <>
       {status === 'installed' && <InstalledProfile onOpenLanguage={() => setIsLangModalOpen(true)} />}
       {status === 'approved' && <ApprovedProfile onOpenLanguage={() => setIsLangModalOpen(true)} />}
+      {status === 'logged_in' && <LoggedInProfile onOpenLanguage={() => setIsLangModalOpen(true)} />}
       {status === 'guest' && <GuestProfile />}
       
       <LanguageModal isOpen={isLangModalOpen} onClose={() => setIsLangModalOpen(false)} />
