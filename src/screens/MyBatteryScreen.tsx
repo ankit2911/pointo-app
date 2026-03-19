@@ -71,20 +71,21 @@ const MyBatteryScreen: React.FC = () => {
 
   if (!user) return null;
 
-  const emiProgress = (user.emiPaid / user.em  if (user.paymentStatus === 'recovered') {
+  const emiProgress = (user.emiPaid / (user.emiTotal || 1)) * 100;
+  if (user.paymentStatus === 'recovered') {
     const isGraceExpired = (user.gracePeriod || 0) <= 0;
     return (
       <div className="p-6 flex flex-col items-center justify-center min-h-[calc(100vh-8rem)] text-center">
         <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center text-4xl mb-6 shadow-sm border border-red-200">
-           {isGraceExpired ? '⛔' : '🔒'}
+          {isGraceExpired ? '⛔' : '🔒'}
         </div>
         <h1 className="text-2xl font-black text-gray-900 mb-2">
-           {isGraceExpired ? 'Grace Period Expired' : t('battery_recovered_title')}
+          {isGraceExpired ? 'Grace Period Expired' : t('battery_recovered_title')}
         </h1>
         <p className="text-xs text-gray-500 mb-6 max-w-[280px] leading-relaxed">
-           {isGraceExpired 
-             ? 'Your account has been permanently closed due to non-payment within the grace period.' 
-             : 'Your battery has been repossessed due to non-payment. Please clear your dues to reclaim it.'}
+          {isGraceExpired
+            ? 'Your account has been permanently closed due to non-payment within the grace period.'
+            : 'Your battery has been repossessed due to non-payment. Please clear your dues to reclaim it.'}
         </p>
 
         <div className="w-full space-y-4 bg-gray-50 rounded-2xl p-5 mb-6 border border-gray-100 text-left">
@@ -92,20 +93,20 @@ const MyBatteryScreen: React.FC = () => {
             <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Total Due</span>
             <span className="text-base font-black text-gray-900">₹{(user.outstandingAmount || 0).toLocaleString()}</span>
           </div>
-          
+
           <div className="space-y-2 pt-1">
-             <div className="flex justify-between items-center text-[10px]">
-               <span className="text-gray-500 font-medium">Missed EMIs (x{user.missedEmis})</span>
-               <span className="text-gray-900 font-bold">₹{(user.recoveryBreakdown?.missedEmis || 0).toLocaleString()}</span>
-             </div>
-             <div className="flex justify-between items-center text-[10px]">
-               <span className="text-gray-500 font-medium">Late Penalty Fee</span>
-               <span className="text-gray-900 font-bold">₹{(user.recoveryBreakdown?.lateFee || 0).toLocaleString()}</span>
-             </div>
-             <div className="flex justify-between items-center text-[10px]">
-               <span className="text-gray-500 font-medium">Recovery Service Charge</span>
-               <span className="text-gray-900 font-bold">₹{(user.recoveryBreakdown?.recoveryCharges || 0).toLocaleString()}</span>
-             </div>
+            <div className="flex justify-between items-center text-[10px]">
+              <span className="text-gray-500 font-medium">Missed EMIs (x{user.missedEmis})</span>
+              <span className="text-gray-900 font-bold">₹{(user.recoveryBreakdown?.missedEmis || 0).toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between items-center text-[10px]">
+              <span className="text-gray-500 font-medium">Late Penalty Fee</span>
+              <span className="text-gray-900 font-bold">₹{(user.recoveryBreakdown?.lateFee || 0).toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between items-center text-[10px]">
+              <span className="text-gray-500 font-medium">Recovery Service Charge</span>
+              <span className="text-gray-900 font-bold">₹{(user.recoveryBreakdown?.recoveryCharges || 0).toLocaleString()}</span>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4 pt-3 border-t border-gray-200/50">
@@ -131,17 +132,16 @@ const MyBatteryScreen: React.FC = () => {
         )}
 
         <div className="w-full space-y-3">
-          <button 
+          <button
             disabled={isGraceExpired}
-            className={`w-full font-bold py-4 rounded-2xl transition-all shadow-lg ${
-              isGraceExpired 
-                ? 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none' 
-                : 'bg-gray-900 text-white active:scale-[0.98] shadow-gray-200'
-            }`}
+            className={`w-full font-bold py-4 rounded-2xl transition-all shadow-lg ${isGraceExpired
+              ? 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none'
+              : 'bg-gray-900 text-white active:scale-[0.98] shadow-gray-200'
+              }`}
           >
             {isGraceExpired ? 'Account Closed' : t('battery_pay_reclaim')}
           </button>
-          <button 
+          <button
             onClick={() => navigate('/support')}
             className="w-full bg-white text-gray-900 border border-gray-200 font-bold py-4 rounded-2xl active:scale-[0.98] transition-transform"
           >
@@ -149,9 +149,6 @@ const MyBatteryScreen: React.FC = () => {
           </button>
         </div>
       </div>
-    );
-  }
-   </div>
     );
   }
 
