@@ -6,9 +6,29 @@ import { useUser } from '../context/UserContext';
 import { useLanguage } from '../context/LanguageContext';
 
 const ExploreScreen: React.FC = () => {
-  const { status } = useUser();
+  const { status, user } = useUser();
   const { t } = useLanguage();
   const navigate = useNavigate();
+
+  if (status === 'installed' && user?.paymentStatus === 'recovered') {
+    return (
+      <div className="p-6 flex flex-col items-center justify-center min-h-[calc(100vh-8rem)] text-center">
+        <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center text-4xl mb-6 grayscale">
+          🔋
+        </div>
+        <h1 className="text-xl font-black text-gray-900 mb-2">Catalogue Locked</h1>
+        <p className="text-sm text-gray-500 mb-8 max-w-[280px]">
+          New accessories and batteries are hidden until the primary battery is reclaimed.
+        </p>
+        <button 
+          onClick={() => navigate('/')}
+          className="bg-gray-900 text-white px-8 py-3 rounded-xl font-bold text-sm"
+        >
+          Go Home
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 pb-6">

@@ -8,14 +8,17 @@ import ExploreScreen from './screens/ExploreScreen';
 import CommunityScreen from './screens/CommunityScreen';
 import MyBatteryScreen from './screens/MyBatteryScreen';
 import ProfileScreen from './screens/ProfileScreen';
+import BatteryLocationScreen from './screens/BatteryLocationScreen';
 import InstallationScreen from './screens/InstallationScreen';
 import InstallationStatus from './screens/InstallationStatus';
 import PaymentHistory from './screens/PaymentHistory';
 import Documents from './screens/Documents';
 import Support from './screens/Support';
 import ServiceRequests from './screens/ServiceRequests';
+import ServiceTicketScreen from './screens/ServiceTicketScreen';
 import LoginScreen from './screens/LoginScreen';
 import BatteryDetails from './screens/BatteryDetails';
+import ChargerDetailsScreen from './screens/ChargerDetailsScreen';
 import FinancingFlow from './screens/FinancingFlow';
 import ReferralScreen from './screens/ReferralScreen';
 import ReferralDashboard from './screens/ReferralDashboard';
@@ -39,6 +42,9 @@ const MainLayout = () => (
         <Route path="/documents" element={<Documents />} />
         <Route path="/support" element={<Support />} />
         <Route path="/service-requests" element={<ServiceRequests />} />
+        <Route path="/service-ticket" element={<ServiceTicketScreen />} />
+        <Route path="/battery-location" element={<BatteryLocationScreen />} />
+        <Route path="/charger-details" element={<ChargerDetailsScreen />} />
         <Route path="/referral" element={<ReferralScreen />} />
         <Route path="/referral/dashboard" element={<ReferralDashboard />} />
         <Route path="/referral/:code" element={<ReferralJoinScreen />} />

@@ -13,6 +13,8 @@ interface UserContextType {
   pendingReferralCode: string | null;
   setPendingReferralCode: (code: string | null) => void;
   updateLoggedInUser: (data: Partial<LoggedInUser>) => void;
+  setPaymentStatus: (status: InstalledUser['paymentStatus']) => void;
+  setBatteryType: (type: 'own' | 'service') => void;
 }
 
 const UserContext = createContext<UserContextType>({
@@ -25,10 +27,12 @@ const UserContext = createContext<UserContextType>({
   pendingReferralCode: null,
   setPendingReferralCode: () => {},
   updateLoggedInUser: () => {},
+  setPaymentStatus: () => {},
+  setBatteryType: () => {},
 });
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [status, setStatus] = useState<UserStatus>('logged_in');
+  const [status, setStatus] = useState<UserStatus>('installed');
   const [currentInstalledUser, setCurrentInstalledUser] = useState<InstalledUser>(installedUser);
   const [currentApprovedUser, setCurrentApprovedUser] = useState<ApprovedUser>(approvedUser);
   const [currentLoggedInUser, setCurrentLoggedInUser] = useState<LoggedInUser>({ 
@@ -40,6 +44,14 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const updateLoggedInUser = (data: Partial<LoggedInUser>) => {
     setCurrentLoggedInUser(prev => ({ ...prev, ...data }));
+  };
+
+  const setPaymentStatus = (paymentStatus: InstalledUser['paymentStatus']) => {
+    setCurrentInstalledUser(prev => ({ ...prev, paymentStatus }));
+  };
+  
+  const setBatteryType = (currentBatteryType: 'own' | 'service') => {
+    setCurrentInstalledUser(prev => ({ ...prev, currentBatteryType }));
   };
 
   const mockReferrals = [
@@ -81,6 +93,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       pendingReferralCode,
       setPendingReferralCode,
       updateLoggedInUser,
+      setPaymentStatus,
+      setBatteryType,
     }}>
       {children}
     </UserContext.Provider>

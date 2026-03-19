@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
+import { useLanguage } from '../context/LanguageContext';
+import { InstalledUser } from '../types';
 
 const ChevronLeftIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -48,12 +50,55 @@ const StatusBadge: React.FC<{ status: string }> = ({ status }) => {
 };
 
 const ReferralDashboard: React.FC = () => {
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const { user, approvedUser, status } = useUser();
   const [copiedCode, setCopiedCode] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
 
   const currentUser = status === 'installed' ? user : approvedUser;
+  const isInstalled = status === 'installed';
+  const installedUser = isInstalled ? (currentUser as InstalledUser) : null;
+
+  if (isInstalled && installedUser?.paymentStatus === 'recovered') {
+    return (
+      <div className="bg-white min-h-screen flex flex-col pt-12 items-center px-6 text-center">
+        <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center text-4xl mb-6 grayscale">
+          🎁
+        </div>
+        <h1 className="text-xl font-black text-gray-900 mb-2">Referrals Unavailable</h1>
+        <p className="text-sm text-gray-500 mb-8 max-w-[280px]">
+          Referral features are hidden until the battery is reclaimed.
+        </p>
+        <button 
+          onClick={() => navigate('/')}
+          className="bg-gray-900 text-white px-8 py-3 rounded-xl font-bold text-sm"
+        >
+          Go Home
+        </button>
+      </div>
+    );
+  }
+
+  if (isInstalled && installedUser?.paymentStatus === 'defaulted') {
+    return (
+      <div className="bg-white min-h-screen flex flex-col items-center justify-center p-6 text-center">
+        <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center text-4xl mb-6">
+          🎁
+        </div>
+        <h1 className="text-xl font-black text-gray-900 mb-2">{t('referral_unavailable_restricted')}</h1>
+        <p className="text-sm text-gray-500 mb-8">
+          {t('battery_unavailable_dues')}
+        </p>
+        <button 
+          onClick={() => navigate('/my-battery')}
+          className="bg-red-600 text-white px-8 py-3 rounded-xl font-bold"
+        >
+          {t('battery_pay_dues')}
+        </button>
+      </div>
+    );
+  }
 
   if (!currentUser || !currentUser.referralEnabled) {
     return (
@@ -107,6 +152,14 @@ const ReferralDashboard: React.FC = () => {
       </div>
 
       <div className="flex-1 overflow-y-auto pb-10">
+        {/* Overdue Banner */}
+        {isInstalled && installedUser?.paymentStatus === 'overdue' && (
+          <div className="bg-amber-100 border-b border-amber-200 px-4 py-3 text-center">
+            <p className="text-[10px] font-black uppercase tracking-widest text-amber-900">
+              ⚠️ {t('referral_rewards_paused')}
+            </p>
+          </div>
+        )}
         {/* Referral Code & Link Card */}
         <div className="p-4">
           <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 space-y-6">

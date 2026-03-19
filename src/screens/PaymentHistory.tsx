@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
+import { useUser } from '../context/UserContext';
 
 const BackIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -12,11 +13,16 @@ const BackIcon = () => (
 const PaymentHistory: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
+  const { user } = useUser();
 
-  const transactions = [
-    { month: 'March 2026', amount: 499, status: 'Paid', date: '5 Mar 2026' },
-    { month: 'Feb 2026', amount: 499, status: 'Paid', date: '5 Feb 2026' },
-    { month: 'Jan 2026', amount: 499, status: 'Paid', date: '5 Jan 2026' },
+  if (!user) return null;
+
+  const remaining = user.totalLoan - (user.emiPaid * user.emiAmount);
+
+  const schedule = [
+    { month: 'March 2026', amount: user.emiAmount, status: 'Paid' },
+    { month: 'April 2026', amount: user.emiAmount, status: 'Overdue' },
+    { month: 'May 2026', amount: user.emiAmount, status: 'Upcoming' },
   ];
 
   return (
@@ -30,43 +36,66 @@ const PaymentHistory: React.FC = () => {
       </div>
 
       <div className="p-4 space-y-4 pb-6">
-        {/* Summary Card */}
-        <div className="bg-gradient-to-br from-indigo-900 to-indigo-700 rounded-2xl p-5 shadow-sm text-white relative overflow-hidden">
-          <div className="absolute -right-4 -bottom-4 text-6xl opacity-10">💳</div>
-          <div className="relative z-10 space-y-3">
-            <div className="flex justify-between items-center border-b border-white/10 pb-2">
-              <span className="text-xs text-indigo-200">{t('payment_provider')}</span>
-              <span className="text-sm font-bold">{t('payment_pointo_finance')}</span>
+        {/* Payment Summary Card */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="bg-gray-900 p-5 text-white">
+            <h2 className="text-sm font-bold opacity-80 mb-4">{t('payment_summary')}</h2>
+            <div className="grid grid-cols-2 gap-y-4">
+              <div>
+                <p className="text-[10px] uppercase tracking-wider opacity-60 mb-0.5">{t('payment_total_loan')}</p>
+                <p className="text-lg font-bold">₹{user.totalLoan.toLocaleString()}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-[10px] uppercase tracking-wider opacity-60 mb-0.5">{t('payment_paid')}</p>
+                <p className="text-lg font-bold text-green-400">₹{(user.emiPaid * user.emiAmount).toLocaleString()}</p>
+              </div>
+              <div>
+                <p className="text-[10px] uppercase tracking-wider opacity-60 mb-0.5">{t('payment_remaining')}</p>
+                <p className="text-lg font-bold">₹{remaining.toLocaleString()}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-[10px] uppercase tracking-wider opacity-60 mb-0.5">{t('payment_emi')}</p>
+                <p className="text-lg font-bold">₹{user.emiAmount.toLocaleString()}</p>
+              </div>
             </div>
-            <div className="flex justify-between items-center border-b border-white/10 pb-2">
-              <span className="text-xs text-indigo-200">{t('payment_emi_amount')}</span>
-              <span className="text-sm font-bold text-green-300">₹499{t('battery_per_month')}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-xs text-indigo-200">{t('payment_paid_progress')}</span>
-              <span className="text-sm font-bold">6 / 24</span>
-            </div>
+          </div>
+          <div className="px-5 py-3 bg-gray-50 flex justify-between items-center border-t border-gray-100">
+            <span className="text-xs text-gray-500 font-medium">{t('payment_tenure')}</span>
+            <span className="text-sm font-bold text-gray-900">24 {t('fin_months')}</span>
           </div>
         </div>
 
-        {/* Transaction List */}
+        {/* Payment Schedule List */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider px-5 pt-4 mb-2">{t('payment_transactions')}</p>
+          <div className="px-5 pt-4 mb-2 flex justify-between items-center">
+            <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider">{t('payment_schedule')}</p>
+          </div>
           <div className="divide-y divide-gray-50">
-            {transactions.map((tx, i) => (
+            {schedule.map((item, i) => (
               <div key={i} className="p-4 px-5 flex items-center justify-between hover:bg-gray-50 transition-colors">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-green-600 font-bold shrink-0">
-                    ₹
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0 ${
+                    item.status === 'Paid' ? 'bg-green-50 text-green-600' : 
+                    item.status === 'Overdue' ? 'bg-red-50 text-red-600' :
+                    item.status === 'Due' ? 'bg-amber-50 text-amber-600' : 'bg-blue-50 text-blue-600'
+                  }`}>
+                    {item.status === 'Paid' ? '✓' : item.status === 'Overdue' ? '!' : item.status === 'Due' ? '!' : '•'}
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-gray-900">{tx.month}</h3>
-                    <p className="text-xs text-gray-500 mt-0.5">{tx.date}</p>
+                    <h3 className="text-sm font-bold text-gray-900">{item.month}</h3>
+                    <p className="text-xs text-gray-500 mt-0.5">₹{item.amount.toLocaleString()}</p>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-sm font-bold text-gray-900">₹{tx.amount}</p>
-                  <p className="text-[10px] font-bold text-green-600 uppercase tracking-wide mt-1">{tx.status}</p>
+                <div>
+                  <span className={`text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide ${
+                    item.status === 'Paid' ? 'bg-green-50 text-green-600' : 
+                    item.status === 'Overdue' ? 'bg-red-50 text-red-600' :
+                    item.status === 'Due' ? 'bg-amber-50 text-amber-600' : 'bg-blue-50 text-blue-600'
+                  }`}>
+                    {item.status === 'Paid' ? t('payment_status_paid') : 
+                     item.status === 'Overdue' ? t('payment_status_overdue') :
+                     item.status === 'Due' ? t('payment_status_due') : t('payment_status_upcoming')}
+                  </span>
                 </div>
               </div>
             ))}

@@ -40,6 +40,35 @@ export interface Referral {
   points: number;
 }
 
+export interface BatteryData {
+  model: string;
+  serialNumber: string;
+  status: 'active' | 'under_repair' | 'inactive';
+}
+
+export interface ChargerData {
+  type: 'Basic' | 'Advance';
+  brand: string;
+  model: string;
+  serialNumber: string;
+  rating: string;
+  warranty: string;
+  ipRated: boolean;
+  status: 'active' | 'inactive';
+}
+
+export interface UserBatteries {
+  own: BatteryData;
+  service?: BatteryData;
+}
+
+export interface ServiceTicket {
+  id: string;
+  issue: string;
+  status: 'Request Raised' | 'Battery Picked Up' | 'Under Repair' | 'Ready for Delivery';
+  estimatedDays: number;
+}
+
 export interface InstalledUser {
   name: string;
   vehicle: string;
@@ -53,6 +82,13 @@ export interface InstalledUser {
   emiAmount: number;
   emiPaid: number;
   emiTotal: number;
+  totalLoan: number;
+  paymentStatus: 'active' | 'overdue' | 'defaulted' | 'recovered';
+  overdueDays?: number;
+  outstandingAmount?: number;
+  missedEmis?: number;
+  recoveryDate?: string;
+  gracePeriod?: number;
   dealer: string;
   warrantyExpiry: string;
   installDate: string;
@@ -60,6 +96,14 @@ export interface InstalledUser {
   referralCode?: string;
   referralLink?: string;
   referrals?: Referral[];
+  locationAvailable?: boolean;
+  locationLastUpdated?: string;
+  locationName?: string;
+  coordinates?: { lat: number; lng: number };
+  currentBatteryType: 'own' | 'service';
+  batteries: UserBatteries;
+  charger?: ChargerData;
+  serviceTicket?: ServiceTicket;
 }
 
 export interface ApprovedUser {

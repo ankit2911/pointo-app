@@ -90,27 +90,194 @@ const InstalledProfile: React.FC<{ onOpenLanguage: () => void }> = ({ onOpenLang
             <h1 className="text-lg font-extrabold text-gray-900">{user.name}</h1>
             <p className="text-xs text-gray-500">{user.vehicle}</p>
           </div>
-          <span className="shrink-0 bg-green-100 text-green-700 text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">{t('installed_active_badge')}</span>
+          <span className={`shrink-0 text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wider ${
+            user.paymentStatus === 'active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+          }`}>
+            {user.paymentStatus === 'active' ? t('installed_active_badge') : user.paymentStatus}
+          </span>
         </div>
       </div>
 
-      {/* Battery Details */}
-      <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-        <h2 className="text-sm font-bold text-gray-900 mb-3">{t('battery_details')}</h2>
-        <div className="space-y-2.5">
-          {[
-            { label: t('approved_battery_model'), value: user.batteryModel },
-            { label: t('approved_dealer'), value: user.dealer },
-            { label: t('installed_on'), value: user.installDate },
-            { label: t('warranty_until'), value: user.warrantyExpiry },
-          ].map((item, i) => (
-            <div key={i} className="flex justify-between items-center py-1.5">
-              <span className="text-xs text-gray-400">{item.label}</span>
-              <span className="text-xs font-semibold text-gray-800">{item.value}</span>
+      {/* Delinquency Action Card */}
+      {user.paymentStatus !== 'active' && (
+        <div className="bg-red-600 rounded-2xl p-5 text-white shadow-xl shadow-red-600/20">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-widest opacity-80">
+                {user.paymentStatus === 'overdue' ? t('payment_overdue_card_title') : 
+                 user.paymentStatus === 'defaulted' ? t('battery_account_restricted') : 
+                 t('battery_recovered_title')}
+              </p>
+              <p className="text-2xl font-black mt-1">₹{(user.outstandingAmount || user.emiAmount).toLocaleString()}</p>
             </div>
-          ))}
+            <div className="text-3xl">⚠️</div>
+          </div>
+          <button className="w-full bg-white text-red-600 font-black py-4 rounded-xl active:scale-[0.98] transition-all text-sm">
+            {user.paymentStatus === 'overdue' ? t('battery_pay_now') : 
+             user.paymentStatus === 'defaulted' ? t('battery_pay_dues') : 
+             t('battery_pay_reclaim')}
+          </button>
         </div>
-      </div>
+      )}
+
+      {/* Battery Details */}
+      {user.paymentStatus !== 'recovered' && (
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+          <h2 className="text-sm font-bold text-gray-900 mb-4">{t('battery_details')}</h2>
+          
+          {/* Currently In Use */}
+          <div className="mb-6">
+            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-2 px-1">Currently in Use</p>
+            <div className="bg-gray-50 rounded-xl p-3 space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-[10px] text-gray-500">Battery Type</span>
+                <span className="text-[10px] font-bold text-gray-900 bg-white px-2 py-0.5 rounded shadow-sm">
+                  {user.currentBatteryType === 'service' ? 'Service Battery' : 'Own Battery'}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-[10px] text-gray-500">Model</span>
+                <span className="text-[10px] font-bold text-gray-900">{(user.currentBatteryType === 'own' ? user.batteries.own : user.batteries.service!).model}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-[10px] text-gray-500">Serial Number</span>
+                <span className="text-[10px] font-mono font-bold text-green-700 bg-green-50 px-1.5 py-0.5 rounded">{(user.currentBatteryType === 'own' ? user.batteries.own : user.batteries.service!).serialNumber}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Original Battery (Only show when using service battery) */}
+          {user.currentBatteryType === 'service' && (
+            <div>
+              <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-2 px-1">Original Battery</p>
+              <div className="bg-gray-50 rounded-xl p-3 space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-[10px] text-gray-500">Model</span>
+                  <span className="text-[10px] font-bold text-gray-900">{user.batteries.own.model}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-[10px] text-gray-500">Serial Number</span>
+                  <span className="text-[10px] font-mono font-bold text-gray-600 px-1.5 py-0.5 rounded bg-white border border-gray-100">{user.batteries.own.serialNumber}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-[10px] text-gray-500">Status</span>
+                  <span className={`text-[10px] font-bold uppercase tracking-wider ${user.batteries.own.status === 'under_repair' ? 'text-amber-600' : 'text-green-600'}`}>
+                    {user.batteries.own.status === 'under_repair' ? 'Under Repair' : 'Active'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="mt-4 pt-4 border-t border-gray-100 space-y-2.5">
+            {[
+              { label: t('approved_dealer'), value: user.dealer },
+              { label: t('installed_on'), value: user.installDate },
+              { label: t('warranty_until'), value: user.warrantyExpiry },
+            ].map((item, i) => (
+              <div key={i} className="flex justify-between items-center py-0.5">
+                <span className="text-[10px] text-gray-400">{item.label}</span>
+                <span className="text-[10px] font-semibold text-gray-800">{item.value}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Charger Pairing Hint */}
+          {user.charger && (
+            <div className="mt-4 pt-3 border-t border-gray-100 italic">
+              <p className="text-[10px] text-gray-400 font-medium">
+                Paired with {user.charger.model} ({user.charger.brand})
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Account Status for Recovered Users */}
+      {user.paymentStatus === 'recovered' && (
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+          <h2 className="text-sm font-bold text-gray-900 mb-4">Account Status</h2>
+          <div className="bg-red-50 rounded-2xl p-5 border border-red-100 space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center text-2xl shadow-sm">🚫</div>
+              <div>
+                <p className="text-[10px] text-red-500 font-black uppercase tracking-widest leading-none">Status</p>
+                <h3 className="text-lg font-black text-red-600 mt-1">Battery Recovered</h3>
+              </div>
+            </div>
+            
+            <p className="text-sm text-gray-700 leading-relaxed font-medium">
+              Your battery has been repossessed due to non-payment.
+            </p>
+
+            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-red-100/50">
+               <div>
+                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Recovery Date</p>
+                  <p className="text-xs font-black text-gray-900">Oct 12, 2023</p>
+               </div>
+               <div>
+                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Grace Period</p>
+                  <p className="text-xs font-black text-red-600">18 Days Left</p>
+               </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-3 mt-6">
+            <button className="w-full bg-gray-900 text-white font-black py-4 rounded-xl active:scale-[0.98] transition-all text-sm shadow-lg shadow-gray-200">
+              {t('battery_pay_reclaim')}
+            </button>
+            <button 
+              onClick={() => navigate('/support')}
+              className="w-full bg-white text-gray-900 border border-gray-200 font-bold py-4 rounded-xl active:scale-[0.98] transition-all text-sm"
+            >
+              Contact Support
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Charger Details Section */}
+      {user.charger && user.paymentStatus !== 'recovered' && (
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+          <h2 className="text-sm font-bold text-gray-900 mb-4">Charger Details</h2>
+          <div className="bg-blue-50/50 rounded-2xl p-4 border border-blue-100 space-y-4">
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="text-[10px] text-gray-400 font-bold uppercase">Charger Model</p>
+                <p className="text-sm font-black text-gray-900">{user.charger.model}</p>
+              </div>
+              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-xl shadow-sm">🔌</div>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-[10px] text-gray-400 font-bold uppercase">Brand</p>
+                <p className="text-xs font-bold text-gray-900">{user.charger.brand}</p>
+              </div>
+              <div>
+                <p className="text-[10px] text-gray-400 font-bold uppercase">Type</p>
+                <p className="text-xs font-bold text-gray-900">{user.charger.type}</p>
+              </div>
+              <div>
+                <p className="text-[10px] text-gray-400 font-bold uppercase">Serial Number</p>
+                <p className="text-xs font-mono font-bold text-gray-700">{user.charger.serialNumber}</p>
+              </div>
+              <div>
+                <p className="text-[10px] text-gray-400 font-bold uppercase">Rating</p>
+                <p className="text-xs font-bold text-gray-900">{user.charger.rating}</p>
+              </div>
+              <div>
+                <p className="text-[10px] text-gray-400 font-bold uppercase">Warranty</p>
+                <p className="text-xs font-bold text-gray-900">{user.charger.warranty}</p>
+              </div>
+              <div>
+                <p className="text-[10px] text-gray-400 font-bold uppercase">Status</p>
+                <span className="text-[10px] font-black text-green-600 bg-green-50 px-2 py-0.5 rounded-full border border-green-100 uppercase">{user.charger.status}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Menu Sections */}
       {menuSections.map((section, si) => (
