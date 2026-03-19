@@ -89,6 +89,11 @@ export interface InstalledUser {
   missedEmis?: number;
   recoveryDate?: string;
   gracePeriod?: number;
+  recoveryBreakdown?: {
+    missedEmis: number;
+    lateFee: number;
+    recoveryCharges: number;
+  };
   dealer: string;
   warrantyExpiry: string;
   installDate: string;

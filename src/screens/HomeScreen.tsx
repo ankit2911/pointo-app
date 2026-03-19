@@ -43,34 +43,75 @@ const InstalledHome: React.FC = () => {
   const activeBattery = user.currentBatteryType === 'own' ? user.batteries.own : user.batteries.service!;
 
   if (user.paymentStatus === 'recovered') {
+    const isGraceExpired = (user.gracePeriod || 0) <= 0;
     return (
       <div className="p-6 flex flex-col items-center justify-center min-h-[calc(100vh-8rem)] text-center">
-        <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center text-4xl mb-6">
-          🔒
+        <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center text-4xl mb-6 shadow-sm border border-red-200">
+          {isGraceExpired ? '⛔' : '🔒'}
         </div>
-        <h1 className="text-2xl font-black text-gray-900 mb-3">{t('battery_recovered_title')}</h1>
-        <p className="text-sm text-gray-500 mb-8 max-w-[280px]">
-          {t('battery_recovered_msg')}
+        <h1 className="text-2xl font-black text-gray-900 mb-2">
+          {isGraceExpired ? 'Grace Period Expired' : t('battery_recovered_title')}
+        </h1>
+        <p className="text-xs text-gray-500 mb-6 max-w-[280px] leading-relaxed">
+          {isGraceExpired
+            ? 'Your account has been permanently closed due to non-payment within the grace period.'
+            : 'Your battery has been repossessed due to non-payment. Please clear your dues to reclaim it.'}
         </p>
 
-        <div className="w-full space-y-3 bg-gray-50 rounded-2xl p-5 mb-8">
-          <div className="flex justify-between items-center">
-            <span className="text-xs text-gray-500">{t('battery_total_due')}</span>
-            <span className="text-sm font-bold text-gray-900">₹{(user.outstandingAmount || 0).toLocaleString()}</span>
+        <div className="w-full space-y-4 bg-gray-50 rounded-2xl p-5 mb-6 border border-gray-100">
+          <div className="flex justify-between items-center pb-2 border-b border-gray-200/50">
+            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Total Due</span>
+            <span className="text-base font-black text-gray-900">₹{(user.outstandingAmount || 0).toLocaleString()}</span>
           </div>
-          <div className="flex justify-between items-center pt-3 border-t border-gray-200">
-            <span className="text-xs text-gray-500">{t('battery_grace_period')}</span>
-            <span className="text-sm font-bold text-red-600">{(user.gracePeriod || 0)} {t('battery_days_count').replace('{{count}}', '')}</span>
+
+          <div className="space-y-2 pt-1">
+            <div className="flex justify-between items-center text-[10px]">
+              <span className="text-gray-500 font-medium">Missed EMIs (x{user.missedEmis})</span>
+              <span className="text-gray-900 font-bold">₹{(user.recoveryBreakdown?.missedEmis || 0).toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between items-center text-[10px]">
+              <span className="text-gray-500 font-medium">Late Penalty Fee</span>
+              <span className="text-gray-900 font-bold">₹{(user.recoveryBreakdown?.lateFee || 0).toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between items-center text-[10px]">
+              <span className="text-gray-500 font-medium">Recovery Service Charge</span>
+              <span className="text-gray-900 font-bold">₹{(user.recoveryBreakdown?.recoveryCharges || 0).toLocaleString()}</span>
+            </div>
+          </div>
+
+          <div className="flex justify-between items-center pt-3 border-t border-gray-200/50">
+            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Recovery Date</span>
+            <span className="text-[10px] font-black text-gray-700">{user.recoveryDate}</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Grace Period</span>
+            <span className={`text-[10px] font-black ${isGraceExpired ? 'text-gray-400' : 'text-red-600'}`}>
+              {isGraceExpired ? 'Expired' : `${user.gracePeriod} Days Remaining`}
+            </span>
           </div>
         </div>
 
+        {!isGraceExpired && (
+          <div className="bg-amber-50 rounded-xl p-3 mb-6 border border-amber-100">
+            <p className="text-[9px] text-amber-700 font-bold leading-tight">
+              ⚠️ Failure to reclaim within grace period may lead to permanent closure.
+            </p>
+          </div>
+        )}
+
         <div className="w-full space-y-3">
-          <button className="w-full bg-gray-900 text-white font-bold py-4 rounded-2xl active:scale-[0.98] transition-transform">
-            {t('battery_pay_reclaim')}
+          <button
+            disabled={isGraceExpired}
+            className={`w-full font-bold py-4 rounded-2xl transition-all shadow-lg ${isGraceExpired
+              ? 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none'
+              : 'bg-gray-900 text-white active:scale-[0.98] shadow-gray-200'
+              }`}
+          >
+            {isGraceExpired ? 'Account Closed' : t('battery_pay_reclaim')}
           </button>
-          <button 
+          <button
             onClick={() => navigate('/support')}
-            className="w-full bg-white text-gray-900 font-bold py-4 rounded-2xl border border-gray-200 active:scale-[0.98] transition-transform"
+            className="w-full bg-white text-gray-900 border border-gray-200 font-bold py-4 rounded-2xl active:scale-[0.98] transition-transform"
           >
             {t('battery_contact_support')}
           </button>
@@ -81,53 +122,53 @@ const InstalledHome: React.FC = () => {
 
   if (user.paymentStatus === 'defaulted') {
     return (
-       <div className="p-4 space-y-4 pb-6">
-          <div className="bg-red-50 border border-red-100 rounded-2xl p-5">
-            <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center text-xl">🚫</div>
-                <div>
-                  <h1 className="text-lg font-black text-gray-900 leading-tight">{t('battery_account_restricted')}</h1>
-                  <p className="text-[10px] text-red-600 font-bold uppercase tracking-wider">{(user.missedEmis || 0)} {t('battery_missed_emis')}</p>
-                </div>
+      <div className="p-4 space-y-4 pb-6">
+        <div className="bg-red-50 border border-red-100 rounded-2xl p-5">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center text-xl">🚫</div>
+            <div>
+              <h1 className="text-lg font-black text-gray-900 leading-tight">{t('battery_account_restricted')}</h1>
+              <p className="text-[10px] text-red-600 font-bold uppercase tracking-wider">{(user.missedEmis || 0)} {t('battery_missed_emis')}</p>
             </div>
-            <p className="text-xs text-gray-600 mb-4 leading-relaxed">{t('battery_restricted_msg')}</p>
-            
-            <div className="grid grid-cols-2 gap-3 mb-4">
-                <div className="bg-white rounded-xl p-3 border border-red-50">
-                  <p className="text-[10px] text-gray-400 uppercase font-bold mb-0.5">{t('battery_outstanding_amount')}</p>
-                  <p className="text-base font-black text-gray-900">₹{(user.outstandingAmount || 0).toLocaleString()}</p>
-                </div>
-                <div className="bg-white rounded-xl p-3 border border-red-50">
-                  <p className="text-[10px] text-gray-400 uppercase font-bold mb-0.5">{t('battery_missed_emis')}</p>
-                  <p className="text-base font-black text-gray-900">{user.missedEmis || 0}</p>
-                </div>
-            </div>
+          </div>
+          <p className="text-xs text-gray-600 mb-4 leading-relaxed">{t('battery_restricted_msg')}</p>
 
-            <div className="flex gap-2">
-              <button className="flex-1 bg-red-600 text-white font-bold text-xs py-3 rounded-xl active:scale-[0.98] transition-transform">
-                {t('battery_pay_dues')}
-              </button>
-              <button 
-                onClick={() => navigate('/support')}
-                className="flex-1 bg-white text-gray-900 font-bold text-xs py-3 rounded-xl border border-red-200 active:scale-[0.98] transition-transform"
-              >
-                {t('battery_contact_support')}
-              </button>
+          <div className="grid grid-cols-2 gap-3 mb-4">
+            <div className="bg-white rounded-xl p-3 border border-red-50">
+              <p className="text-[10px] text-gray-400 uppercase font-bold mb-0.5">{t('battery_outstanding_amount')}</p>
+              <p className="text-base font-black text-gray-900">₹{(user.outstandingAmount || 0).toLocaleString()}</p>
+            </div>
+            <div className="bg-white rounded-xl p-3 border border-red-50">
+              <p className="text-[10px] text-gray-400 uppercase font-bold mb-0.5">{t('battery_missed_emis')}</p>
+              <p className="text-base font-black text-gray-900">{user.missedEmis || 0}</p>
             </div>
           </div>
 
-          {/* Placeholder for disabled sections */}
-          <div className="space-y-4 opacity-50 grayscale pointer-events-none select-none">
-             <div className="bg-white rounded-2xl p-8 border border-gray-100 flex flex-col items-center justify-center text-center">
-                <div className="text-2xl mb-2">🔒</div>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{t('battery_unavailable_dues')}</p>
-             </div>
-             <div className="bg-white rounded-2xl p-8 border border-gray-100 flex flex-col items-center justify-center text-center">
-                <div className="text-2xl mb-2">🎁</div>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{t('battery_unavailable_dues')}</p>
-             </div>
+          <div className="flex gap-2">
+            <button className="flex-1 bg-red-600 text-white font-bold text-xs py-3 rounded-xl active:scale-[0.98] transition-transform">
+              {t('battery_pay_dues')}
+            </button>
+            <button
+              onClick={() => navigate('/support')}
+              className="flex-1 bg-white text-gray-900 font-bold text-xs py-3 rounded-xl border border-red-200 active:scale-[0.98] transition-transform"
+            >
+              {t('battery_contact_support')}
+            </button>
           </div>
-       </div>
+        </div>
+
+        {/* Placeholder for disabled sections */}
+        <div className="space-y-4 opacity-50 grayscale pointer-events-none select-none">
+          <div className="bg-white rounded-2xl p-8 border border-gray-100 flex flex-col items-center justify-center text-center">
+            <div className="text-2xl mb-2">🔒</div>
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{t('battery_unavailable_dues')}</p>
+          </div>
+          <div className="bg-white rounded-2xl p-8 border border-gray-100 flex flex-col items-center justify-center text-center">
+            <div className="text-2xl mb-2">🎁</div>
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{t('battery_unavailable_dues')}</p>
+          </div>
+        </div>
+      </div>
     );
   }
 
@@ -153,109 +194,115 @@ const InstalledHome: React.FC = () => {
             </button>
           </div>
         )}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-green-600 via-green-500 to-emerald-400 p-5 text-white">
-        <div className="absolute top-0 right-14 w-24 h-24 bg-white/10 rounded-full -translate-y-8 translate-x-8" />
-        
-        <div className="absolute top-4 right-4 flex flex-col items-end gap-1.5">
-          <div className={`text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider shadow-lg border ${
-            user.currentBatteryType === 'service'
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-green-600 via-green-500 to-emerald-400 p-5 text-white">
+          <div className="absolute top-0 right-14 w-24 h-24 bg-white/10 rounded-full -translate-y-8 translate-x-8" />
+
+          <div className="absolute top-4 right-4 flex flex-col items-end gap-1.5">
+            <div className={`text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider shadow-lg border ${user.currentBatteryType === 'service'
               ? 'bg-amber-400 text-gray-900 border-amber-300'
               : 'bg-white/20 text-white border-white/30 backdrop-blur-sm'
-          }`}>
-            {user.currentBatteryType === 'service' ? t('rtf_service_tag') : 'Battery Active'}
+              }`}>
+              {user.currentBatteryType === 'service' ? (
+                <div className="flex flex-col">
+                  <span className="font-bold text-center">Service</span>
+                  <span className="text-[9px]">Battery Active</span>
+                </div>
+              ) : (
+                'Battery Active'
+              )}
+            </div>
+          </div>
+
+          <div className="relative z-10">
+            <p className="text-xs text-green-100 font-semibold mb-1">
+              {user.currentBatteryType === 'service' ? 'Service Battery' : t('home_your_battery')} · {activeBattery.model}
+            </p>
+            <p className="text-[10px] text-green-50/70 font-bold uppercase tracking-widest -mt-0.5">
+              Serial: {activeBattery.serialNumber}
+            </p>
+            <div className="flex items-center gap-6 mt-3">
+              <div>
+                <p className="text-3xl font-extrabold">{user.batteryHealth}%</p>
+                <p className="text-xs text-green-100 mt-0.5">{t('home_health')}</p>
+              </div>
+              <div className="w-px h-10 bg-white/20" />
+              <div>
+                <p className="text-3xl font-extrabold">{user.rangeEstimate}<span className="text-sm font-semibold ml-0.5">km</span></p>
+                <p className="text-xs text-green-100 mt-0.5">{t('home_range_est')}</p>
+              </div>
+            </div>
+            <button
+              onClick={() => navigate('/my-battery')}
+              className="mt-4 bg-white text-green-700 font-semibold text-sm py-2.5 px-5 rounded-xl hover:bg-green-50 transition-all active:scale-[0.98]"
+            >
+              {t('home_view_dashboard')}
+            </button>
           </div>
         </div>
 
-        <div className="relative z-10">
-          <p className="text-xs text-green-100 font-semibold mb-1">
-            {user.currentBatteryType === 'service' ? 'Service Battery' : t('home_your_battery')} · {activeBattery.model}
-          </p>
-          <p className="text-[10px] text-green-50/70 font-bold uppercase tracking-widest -mt-0.5">
-            Serial: {activeBattery.serialNumber}
-          </p>
-          <div className="flex items-center gap-6 mt-3">
-            <div>
-              <p className="text-3xl font-extrabold">{user.batteryHealth}%</p>
-              <p className="text-xs text-green-100 mt-0.5">{t('home_health')}</p>
-            </div>
-            <div className="w-px h-10 bg-white/20" />
-            <div>
-              <p className="text-3xl font-extrabold">{user.rangeEstimate}<span className="text-sm font-semibold ml-0.5">km</span></p>
-              <p className="text-xs text-green-100 mt-0.5">{t('home_range_est')}</p>
-            </div>
+        {/* Referral Card */}
+        <ReferralCard />
+
+        {/* Community Activity */}
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+          <h2 className="text-base font-bold text-gray-900 mb-3">{t('home_community_activity')}</h2>
+          <div className="space-y-3">
+            {[
+              { name: 'Priya N.', msg: 'Just completed 100 charge cycles — still going strong!', time: '2h ago' },
+              { name: 'Karthik I.', msg: 'Battery score hit 9.1 after following the tips!', time: '5h ago' },
+            ].map((item, i) => (
+              <div key={i} className="flex items-start gap-3 p-3 bg-gray-50 rounded-xl">
+                <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center text-white text-[10px] font-bold shrink-0">
+                  {item.name.split(' ').map(w => w[0]).join('')}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs text-gray-800 font-semibold">{item.name} <span className="text-gray-400 font-normal">· {item.time}</span></p>
+                  <p className="text-xs text-gray-500 mt-0.5">{item.msg}</p>
+                </div>
+              </div>
+            ))}
           </div>
           <button
-            onClick={() => navigate('/my-battery')}
-            className="mt-4 bg-white text-green-700 font-semibold text-sm py-2.5 px-5 rounded-xl hover:bg-green-50 transition-all active:scale-[0.98]"
+            onClick={() => navigate('/community')}
+            className="w-full mt-3 text-green-600 font-semibold text-xs py-2 rounded-xl border border-green-200 hover:bg-green-50 transition-colors"
           >
-            {t('home_view_dashboard')}
+            {t('home_see_all_stories')}
           </button>
         </div>
-      </div>
 
-      {/* Referral Card */}
-      <ReferralCard />
-
-      {/* Community Activity */}
-      <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-        <h2 className="text-base font-bold text-gray-900 mb-3">{t('home_community_activity')}</h2>
-        <div className="space-y-3">
-          {[
-            { name: 'Priya N.', msg: 'Just completed 100 charge cycles — still going strong!', time: '2h ago' },
-            { name: 'Karthik I.', msg: 'Battery score hit 9.1 after following the tips!', time: '5h ago' },
-          ].map((item, i) => (
-            <div key={i} className="flex items-start gap-3 p-3 bg-gray-50 rounded-xl">
-              <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center text-white text-[10px] font-bold shrink-0">
-                {item.name.split(' ').map(w => w[0]).join('')}
+        {/* Charging Best Practices */}
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+          <h2 className="text-base font-bold text-gray-900 mb-3">{t('home_charging_tips')}</h2>
+          <div className="space-y-2">
+            {[
+              t('home_tip_1'),
+              t('home_tip_2'),
+              t('home_tip_3'),
+            ].map((tip, i) => (
+              <div key={i} className="flex items-start gap-2 p-2.5 bg-amber-50 rounded-lg">
+                <span className="text-xs mt-0.5">💡</span>
+                <p className="text-xs text-amber-800 font-medium leading-relaxed">{tip}</p>
               </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-xs text-gray-800 font-semibold">{item.name} <span className="text-gray-400 font-normal">· {item.time}</span></p>
-                <p className="text-xs text-gray-500 mt-0.5">{item.msg}</p>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-        <button
-          onClick={() => navigate('/community')}
-          className="w-full mt-3 text-green-600 font-semibold text-xs py-2 rounded-xl border border-green-200 hover:bg-green-50 transition-colors"
-        >
-          {t('home_see_all_stories')}
-        </button>
-      </div>
 
-      {/* Charging Best Practices */}
-      <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-        <h2 className="text-base font-bold text-gray-900 mb-3">{t('home_charging_tips')}</h2>
-        <div className="space-y-2">
-          {[
-            t('home_tip_1'),
-            t('home_tip_2'),
-            t('home_tip_3'),
-          ].map((tip, i) => (
-            <div key={i} className="flex items-start gap-2 p-2.5 bg-amber-50 rounded-lg">
-              <span className="text-xs mt-0.5">💡</span>
-              <p className="text-xs text-amber-800 font-medium leading-relaxed">{tip}</p>
-            </div>
-          ))}
+        {/* Upgrade Tips */}
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-gray-900 to-gray-800 p-5 text-white">
+          <div className="absolute -right-4 -bottom-4 text-5xl opacity-10">🔋</div>
+          <div className="relative z-10">
+            <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider mb-1">{t('home_did_you_know')}</p>
+            <h3 className="text-base font-bold mb-1">{t('home_battery_power')}</h3>
+            <p className="text-xs text-gray-400 mb-3">{t('home_battery_power_desc')}</p>
+            <button
+              onClick={() => navigate('/explore')}
+              className="bg-white/10 text-white font-semibold text-xs py-2.5 px-4 rounded-xl hover:bg-white/20 transition-colors active:scale-[0.98]"
+            >
+              {t('home_explore_accessories')}
+            </button>
+          </div>
         </div>
       </div>
-
-      {/* Upgrade Tips */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-gray-900 to-gray-800 p-5 text-white">
-        <div className="absolute -right-4 -bottom-4 text-5xl opacity-10">🔋</div>
-        <div className="relative z-10">
-          <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider mb-1">{t('home_did_you_know')}</p>
-          <h3 className="text-base font-bold mb-1">{t('home_battery_power')}</h3>
-          <p className="text-xs text-gray-400 mb-3">{t('home_battery_power_desc')}</p>
-          <button
-            onClick={() => navigate('/explore')}
-            className="bg-white/10 text-white font-semibold text-xs py-2.5 px-4 rounded-xl hover:bg-white/20 transition-colors active:scale-[0.98]"
-          >
-            {t('home_explore_accessories')}
-          </button>
-        </div>
-      </div>
-    </div>
     </div>
   );
 };
@@ -303,7 +350,7 @@ const GuestHome: React.FC = () => {
             </div>
           ))}
         </div>
-        <button 
+        <button
           onClick={() => {
             if (status === 'guest') {
               navigate('/login', { state: { from: '/financing/start' } });
@@ -382,7 +429,7 @@ const ApprovedHome: React.FC = () => {
           <h1 className="text-2xl font-extrabold leading-tight mb-4">
             {t('home_lithium_ready')}
           </h1>
-          
+
           <div className="space-y-3 mb-5">
             <div className="flex justify-between items-center border-b border-white/10 pb-2">
               <span className="text-xs text-indigo-200">{t('home_battery')}</span>

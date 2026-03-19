@@ -52,8 +52,13 @@ export const installedUser: InstalledUser = {
     status: 'Under Repair',
     estimatedDays: 3,
   },
-  outstandingAmount: 18500,
-  missedEmis: 3,
-  recoveryDate: 'Oct 12, 2023',
+  outstandingAmount: 7500,
+  missedEmis: 2,
+  recoveryDate: '10 March 2026',
   gracePeriod: 18,
+  recoveryBreakdown: {
+    missedEmis: 5000,
+    lateFee: 1500,
+    recoveryCharges: 1000,
+  },
 };

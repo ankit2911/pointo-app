@@ -199,32 +199,77 @@ const InstalledProfile: React.FC<{ onOpenLanguage: () => void }> = ({ onOpenLang
           <h2 className="text-sm font-bold text-gray-900 mb-4">Account Status</h2>
           <div className="bg-red-50 rounded-2xl p-5 border border-red-100 space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center text-2xl shadow-sm">🚫</div>
+              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center text-2xl shadow-sm border border-red-200">
+                {(user.gracePeriod || 0) <= 0 ? '⛔' : '🚫'}
+              </div>
               <div>
                 <p className="text-[10px] text-red-500 font-black uppercase tracking-widest leading-none">Status</p>
-                <h3 className="text-lg font-black text-red-600 mt-1">Battery Recovered</h3>
+                <h3 className="text-lg font-black text-red-600 mt-1">
+                  {(user.gracePeriod || 0) <= 0 ? 'Grace Expired' : 'Battery Recovered'}
+                </h3>
               </div>
             </div>
             
-            <p className="text-sm text-gray-700 leading-relaxed font-medium">
-              Your battery has been repossessed due to non-payment.
+            <p className="text-xs text-gray-700 leading-relaxed font-medium">
+              {(user.gracePeriod || 0) <= 0 
+                ? 'Your grace period for reclamation has expired. Your account is now marked for permanent closure.' 
+                : 'Your battery has been repossessed due to non-payment. Please clear your dues within the grace period.'}
             </p>
+
+            <div className="border-t border-red-100/50 pt-3 space-y-3">
+               <div className="flex justify-between items-center">
+                  <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Total Outstanding</span>
+                  <span className="text-sm font-black text-gray-900">₹{(user.outstandingAmount || 0).toLocaleString()}</span>
+               </div>
+               
+               <div className="space-y-1.5 px-1">
+                  <div className="flex justify-between items-center text-[9px]">
+                    <span className="text-gray-500">Missed EMIs (x{user.missedEmis})</span>
+                    <span className="text-gray-900 font-bold">₹{(user.recoveryBreakdown?.missedEmis || 0).toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-[9px]">
+                    <span className="text-gray-500">Late Penalty Fees</span>
+                    <span className="text-gray-900 font-bold">₹{(user.recoveryBreakdown?.lateFee || 0).toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-[9px]">
+                    <span className="text-gray-500">Recovery Service Charge</span>
+                    <span className="text-gray-900 font-bold">₹{(user.recoveryBreakdown?.recoveryCharges || 0).toLocaleString()}</span>
+                  </div>
+               </div>
+            </div>
 
             <div className="grid grid-cols-2 gap-4 pt-4 border-t border-red-100/50">
                <div>
                   <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Recovery Date</p>
-                  <p className="text-xs font-black text-gray-900">Oct 12, 2023</p>
+                  <p className="text-xs font-black text-gray-900">{user.recoveryDate}</p>
                </div>
                <div>
                   <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Grace Period</p>
-                  <p className="text-xs font-black text-red-600">18 Days Left</p>
+                  <p className={`text-xs font-black ${(user.gracePeriod || 0) <= 0 ? 'text-gray-400' : 'text-red-600'}`}>
+                    {(user.gracePeriod || 0) <= 0 ? 'Expired' : `${user.gracePeriod} Days Left`}
+                  </p>
                </div>
             </div>
           </div>
 
+          {(user.gracePeriod || 0) > 0 && (
+            <div className="bg-amber-50 rounded-xl p-3 mt-4 border border-amber-100">
+              <p className="text-[9px] text-amber-700 font-bold leading-tight italic text-center">
+                "Failure to reclaim within grace period may lead to permanent closure."
+              </p>
+            </div>
+          )}
+
           <div className="grid grid-cols-1 gap-3 mt-6">
-            <button className="w-full bg-gray-900 text-white font-black py-4 rounded-xl active:scale-[0.98] transition-all text-sm shadow-lg shadow-gray-200">
-              {t('battery_pay_reclaim')}
+            <button 
+              disabled={(user.gracePeriod || 0) <= 0}
+              className={`w-full font-black py-4 rounded-xl transition-all text-sm shadow-lg ${
+                (user.gracePeriod || 0) <= 0 
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed shadow-none' 
+                  : 'bg-gray-900 text-white active:scale-[0.98] shadow-gray-200'
+              }`}
+            >
+              {(user.gracePeriod || 0) <= 0 ? 'Account Closed' : t('battery_pay_reclaim')}
             </button>
             <button 
               onClick={() => navigate('/support')}

@@ -71,46 +71,87 @@ const MyBatteryScreen: React.FC = () => {
 
   if (!user) return null;
 
-  const emiProgress = (user.emiPaid / user.emiTotal) * 100;
-
-  if (user.paymentStatus === 'recovered') {
+  const emiProgress = (user.emiPaid / user.em  if (user.paymentStatus === 'recovered') {
+    const isGraceExpired = (user.gracePeriod || 0) <= 0;
     return (
       <div className="p-6 flex flex-col items-center justify-center min-h-[calc(100vh-8rem)] text-center">
-        <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center text-4xl mb-6">
-          🔒
+        <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center text-4xl mb-6 shadow-sm border border-red-200">
+           {isGraceExpired ? '⛔' : '🔒'}
         </div>
-        <h1 className="text-2xl font-black text-gray-900 mb-3">{t('battery_recovered_title')}</h1>
-        <p className="text-sm text-gray-500 mb-8 max-w-[280px]">
-          {t('battery_recovered_msg')}
+        <h1 className="text-2xl font-black text-gray-900 mb-2">
+           {isGraceExpired ? 'Grace Period Expired' : t('battery_recovered_title')}
+        </h1>
+        <p className="text-xs text-gray-500 mb-6 max-w-[280px] leading-relaxed">
+           {isGraceExpired 
+             ? 'Your account has been permanently closed due to non-payment within the grace period.' 
+             : 'Your battery has been repossessed due to non-payment. Please clear your dues to reclaim it.'}
         </p>
 
-        <div className="w-full space-y-3 bg-gray-50 rounded-2xl p-5 mb-8">
-          <div className="flex justify-between items-center">
-            <span className="text-xs text-gray-500">{t('battery_total_due')}</span>
-            <span className="text-sm font-bold text-gray-900">₹{(user.outstandingAmount || 0).toLocaleString()}</span>
+        <div className="w-full space-y-4 bg-gray-50 rounded-2xl p-5 mb-6 border border-gray-100 text-left">
+          <div className="flex justify-between items-center pb-2 border-b border-gray-200/50">
+            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Total Due</span>
+            <span className="text-base font-black text-gray-900">₹{(user.outstandingAmount || 0).toLocaleString()}</span>
           </div>
-          <div className="flex justify-between items-center">
-            <span className="text-xs text-gray-500">{t('battery_recovery_date')}</span>
-            <span className="text-sm font-bold text-gray-900">{user.recoveryDate || 'N/A'}</span>
+          
+          <div className="space-y-2 pt-1">
+             <div className="flex justify-between items-center text-[10px]">
+               <span className="text-gray-500 font-medium">Missed EMIs (x{user.missedEmis})</span>
+               <span className="text-gray-900 font-bold">₹{(user.recoveryBreakdown?.missedEmis || 0).toLocaleString()}</span>
+             </div>
+             <div className="flex justify-between items-center text-[10px]">
+               <span className="text-gray-500 font-medium">Late Penalty Fee</span>
+               <span className="text-gray-900 font-bold">₹{(user.recoveryBreakdown?.lateFee || 0).toLocaleString()}</span>
+             </div>
+             <div className="flex justify-between items-center text-[10px]">
+               <span className="text-gray-500 font-medium">Recovery Service Charge</span>
+               <span className="text-gray-900 font-bold">₹{(user.recoveryBreakdown?.recoveryCharges || 0).toLocaleString()}</span>
+             </div>
           </div>
-          <div className="flex justify-between items-center pt-3 border-t border-gray-200">
-            <span className="text-xs text-gray-500">{t('battery_grace_period')}</span>
-            <span className="text-sm font-bold text-red-600">{(user.gracePeriod || 0)} {t('battery_days_count').replace('{{count}}', '')}</span>
+
+          <div className="grid grid-cols-2 gap-4 pt-3 border-t border-gray-200/50">
+            <div>
+              <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Recovery Date</p>
+              <p className="text-xs font-black text-gray-900">{user.recoveryDate}</p>
+            </div>
+            <div>
+              <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Grace Period</p>
+              <p className={`text-xs font-black ${isGraceExpired ? 'text-gray-400' : 'text-red-600'}`}>
+                {isGraceExpired ? 'Expired' : `${user.gracePeriod} Days Left`}
+              </p>
+            </div>
           </div>
         </div>
 
+        {!isGraceExpired && (
+          <div className="bg-amber-50 rounded-xl p-3 mb-6 border border-amber-100">
+            <p className="text-[9px] text-amber-700 font-bold leading-tight">
+              ⚠️ Failure to reclaim within grace period may lead to permanent closure.
+            </p>
+          </div>
+        )}
+
         <div className="w-full space-y-3">
-          <button className="w-full bg-gray-900 text-white font-bold py-4 rounded-2xl active:scale-[0.98] transition-transform">
-            {t('battery_pay_reclaim')}
+          <button 
+            disabled={isGraceExpired}
+            className={`w-full font-bold py-4 rounded-2xl transition-all shadow-lg ${
+              isGraceExpired 
+                ? 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none' 
+                : 'bg-gray-900 text-white active:scale-[0.98] shadow-gray-200'
+            }`}
+          >
+            {isGraceExpired ? 'Account Closed' : t('battery_pay_reclaim')}
           </button>
-          <button
+          <button 
             onClick={() => navigate('/support')}
-            className="w-full bg-white text-gray-900 font-bold py-4 rounded-2xl border border-gray-200 active:scale-[0.98] transition-transform"
+            className="w-full bg-white text-gray-900 border border-gray-200 font-bold py-4 rounded-2xl active:scale-[0.98] transition-transform"
           >
             {t('battery_contact_support')}
           </button>
         </div>
       </div>
+    );
+  }
+   </div>
     );
   }
 
